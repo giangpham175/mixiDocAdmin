@@ -57,8 +57,8 @@ export default {
     drawer: null,
     menus: [
       { path: '', title: 'Dashboard', icon: 'mdi-view-dashboard' },
-      { path: '/sounds', title: 'Sounds', icon: 'mdi-playlist-music'},
-      { path: '/categories', title: 'Categories', icon: 'mdi-folder-multiple' },
+      // { path: '/sounds', title: 'Sounds', icon: 'mdi-playlist-music'},
+      // { path: '/categories', title: 'Categories', icon: 'mdi-folder-multiple' },
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
     ]
   }),

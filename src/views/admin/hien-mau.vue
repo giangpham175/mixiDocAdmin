@@ -1,13 +1,7 @@
 <template>
   <div>
-    <v-data-table
-      :headers="headers"
-      :items="bloodstorage"
-      :search="search"
-      class="elevation-1"
-      :loading="loading"
-      loading-text="Loading... Please wait"
-    >
+    <v-data-table :headers="headers" :items="bloodstorage" :search="search" class="elevation-1" :loading="loading"
+      loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Danh Sách Hiến Máu</v-toolbar-title>
@@ -16,9 +10,7 @@
 
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
-                >Đăng ký mới</v-btn
-              >
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Đăng ký mới</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -27,45 +19,30 @@
 
               <v-card-text>
                 <v-container>
-                  <v-form
-                    v-bind:disabled="loading"
-                    lazy-validation
-                    ref="dialogForm"
-                  >
+                  <v-form v-bind:disabled="loading" lazy-validation ref="dialogForm">
                     <v-row>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field
-                          :disabled="loading"
-                          :rules="fieldRule"
-                          v-model="editedItem.name"
-                          label="Tên"
-                        ></v-text-field>
+                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
+                        </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field
-                          :disabled="loading"
-                          :rules="fieldRule"
-                          v-model="editedItem.bloodtype"
-                          label="Nhóm Máu"
-                        ></v-text-field>
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.bloodtype"
+                          label="Nhóm Máu" @keyup="uppercase" class="bloodtype"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field
-                          :disabled="loading"
-                          :rules="fieldRule"
-                          v-model="editedItem.accumulation"
-                          label="Tích Lũy"
-                          type="number"
-                        ></v-text-field>
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field disabled v-model="editedItem.accumulation" label="Tích Lũy" type="number">
+                        </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field
-                          :disabled="loading"
-                          :rules="fieldRule"
-                          v-model="editedItem.total"
-                          label="Tổng"
-                          type="number"
-                        ></v-text-field>
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field disabled v-model="editedItem.total" label="Tổng" type="number">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="6" sm="6" md="6">
+                        <v-btn block color="warning" dark class="mb-2" @click="subtract">Đổi
+                          điểm (-2)</v-btn>
+                      </v-col>
+                      <v-col cols="6" sm="6" md="6">
+                        <v-btn block color="primary" dark class="mb-2" @click="plus">Tích điểm (+1)</v-btn>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -74,20 +51,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  :disabled="loading"
-                  color="red darken-1"
-                  text
-                  @click="close"
-                  >Hủy</v-btn
-                >
-                <v-btn
-                  :disabled="loading"
-                  color="blue darken-1"
-                  text
-                  @click="save"
-                  >Lưu</v-btn
-                >
+                <v-btn :disabled="loading" color="red darken-1" text @click="close">Hủy</v-btn>
+                <v-btn :disabled="loading" color="blue darken-1" text @click="save">Lưu</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -108,21 +73,14 @@
       <template v-slot:[`body.prepend`]="{ headers }">
         <tr class="mx-0 px-0">
           <td :colspan="headers.length" class="mx-0 px-0">
-            <v-text-field
-              v-model="search"
-              prepend-inner-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-              filled
-              class="px-0 mx-0"
-            />
+            <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Search" single-line hide-details
+              filled class="px-0 mx-0" />
           </td>
         </tr>
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
+        <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
           mdi-plus-minus-variant
         </v-icon>
         <v-icon small @click="deleteItem(item)" color="error">
@@ -184,14 +142,14 @@ export default {
       editedItem: {
         name: "",
         bloodtype: "",
-        accumulation: "",
-        total: "",
+        accumulation: 1,
+        total: 1,
       },
       defaultItem: {
         name: "",
         bloodtype: "",
-        accumulation: "",
-        total: "",
+        accumulation: 1,
+        total: 1,
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
@@ -227,6 +185,7 @@ export default {
       updateBlood: "bloodstorage/updateBlood",
       removeBlood: "bloodstorage/removeBlood",
     }),
+
     async initialize() {
       this.loading = true;
       try {
@@ -236,6 +195,7 @@ export default {
       }
       this.loading = false;
     },
+
     editItem(item) {
       this.editedIndex = this.bloodstorage.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -244,7 +204,7 @@ export default {
 
     async deleteItem(item) {
       this.loading = true;
-      if (confirm("Are you sure you want to delete this item?")) {
+      if (confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
           await this.removeBlood(item);
@@ -253,13 +213,13 @@ export default {
 
           this.snack = true;
           this.snackColor = "success";
-          this.snackText = "Category has been deleted";
+          this.snackText = "Xóa thông tin người này thành công";
         } catch (e) {
           this.loading = false;
 
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = "Category could not be deleted";
+          this.snackText = "Xóa thông tin người này không thành công";
 
           console.error(e);
         }
@@ -284,25 +244,26 @@ export default {
         try {
           await this.updateBlood({
             index: this.editedIndex,
-            category: this.editedItem,
+            blood: this.editedItem,
           });
           this.loading = false;
           this.close();
 
           this.snack = true;
           this.snackColor = "success";
-          this.snackText = "Category has been updated";
+          this.snackText = "Xóa thông tin người này thành công";
         } catch (e) {
           this.loading = false;
           this.close();
 
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = "Category could not be updated";
+          this.snackText = "Xóa thông tin người này không thành công";
 
           console.error(e);
         }
       } else {
+        // this.editedItem.total = 1
         this.loading = true;
         try {
           await this.addBlood(this.editedItem);
@@ -311,20 +272,76 @@ export default {
 
           this.snack = true;
           this.snackColor = "success";
-          this.snackText = "Category added";
+          this.snackText = "Thêm thông tin người này thành công";
         } catch (e) {
           this.loading = false;
           this.close();
 
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = "Category could not be created";
+          this.snackText = "Thêm thông tin người này không thành công";
 
           console.error(e);
         }
       }
     },
+
+    async plus() {
+      if (!this.$refs.dialogForm.validate()) return;
+
+      if (this.editedIndex > -1) {
+        this.loading = true;
+
+        if (this.editedItem.accumulation === 0) {
+          this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
+          this.editedItem.total = Number(this.editedItem.total) + 1
+        } else {
+          this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
+          this.editedItem.total = Number(this.editedItem.total) + 1
+        }
+        try {
+          await this.updateBlood({
+            index: this.editedIndex,
+            blood: this.editedItem,
+          });
+          this.loading = false;
+
+        } catch (e) {
+          this.loading = false;
+          this.close();
+          console.error(e);
+        }
+      }
+    },
+
+    async subtract() {
+      if (!this.$refs.dialogForm.validate()) return;
+
+      if (this.editedIndex > -1) {
+        if (this.editedItem.accumulation >= 2) {
+          this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
+        }
+
+        try {
+          await this.updateBlood({
+            index: this.editedIndex,
+            blood: this.editedItem,
+          });
+          this.loading = false;
+
+        } catch (e) {
+          this.loading = false;
+          this.close();
+          console.error(e);
+        }
+      }
+    },
+
+    uppercase() {
+      this.editedItem.bloodtype = this.editedItem.bloodtype.toUpperCase();
+    },
   },
+
   filters: {
     truncate: function (text, length, suffix) {
       if (text.length > length) {
@@ -336,3 +353,9 @@ export default {
   },
 };
 </script>
+
+<!-- <style scoped>
+.bloodtype input {
+  text-transform: uppercase;
+}
+</style> -->
