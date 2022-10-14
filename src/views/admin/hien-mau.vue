@@ -11,7 +11,7 @@
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Đăng ký mới</v-btn>
-            </template>
+            </template>      
             <v-card>
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
@@ -59,6 +59,9 @@
 
           <v-btn text icon class="mb-2 ml-2" @click="initialize">
             <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+          <v-btn text icon class="mb-2 ml-2" @click="exportBlood" color="#2E7D32">
+            <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>
       </template>
@@ -339,6 +342,16 @@ export default {
 
     uppercase() {
       this.editedItem.bloodtype = this.editedItem.bloodtype.toUpperCase();
+    },
+
+    async exportBlood() {
+      this.loading = true;
+      try {
+        console.log('export')
+      } catch (e) {
+        console.error(e);
+      }
+      this.loading = false;
     },
   },
 
