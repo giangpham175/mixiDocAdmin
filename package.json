@@ -1,5 +1,5 @@
 {
-  "name": "firebasepanel",
+  "name": "mixidoctor",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "export-from-json": "^1.7.0",
     "firebase": "^7.21.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",

@@ -11,7 +11,7 @@
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Đăng ký mới</v-btn>
-            </template>      
+            </template>
             <v-card>
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
@@ -107,6 +107,7 @@
 <script>
 // import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
+import exportFromJSON from "export-from-json";
 
 export default {
   data() {
@@ -347,8 +348,13 @@ export default {
     async exportBlood() {
       this.loading = true;
       try {
-        const listBlood = JSON.stringify(this.bloodstorage)
-        console.log(listBlood)
+        if (this.user.data.email === 'gp@mixi.com') {
+          const data = this.bloodstorage;
+          const fileName = "hien-mau";
+          const exportType = exportFromJSON.types.csv;
+
+          if (data) exportFromJSON({ data, fileName, exportType });
+        }
       } catch (e) {
         console.error(e);
       }

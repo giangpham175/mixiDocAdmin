@@ -103,6 +103,7 @@
 <script>
 // import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
+import exportFromJSON from "export-from-json";
 
 export default {
   data() {
@@ -291,8 +292,13 @@ export default {
     async exportExpenses() {
       this.loading = true;
       try {
-        const listExpense = JSON.stringify(this.expenses)
-        console.log(listExpense)
+        if (this.user.data.email === 'gp@mixi.com') {
+          const data = this.expenses;
+          const fileName = "sao-ke-khoan-chi";
+          const exportType = exportFromJSON.types.csv;
+
+          if (data) exportFromJSON({ data, fileName, exportType });
+        }
       } catch (e) {
         console.error(e);
       }
