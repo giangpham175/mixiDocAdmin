@@ -108,6 +108,10 @@
 import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
 
+const mime = require('mime')
+const path = require('path')
+const xl = require('excel4node')
+
 export default {
   data() {
     return {
@@ -347,7 +351,8 @@ export default {
     async exportBlood() {
       this.loading = true;
       try {
-        console.log('export')
+        const listBlood = JSON.stringify(this.bloodstorage)
+        console.log(listBlood)
       } catch (e) {
         console.error(e);
       }
