@@ -4,6 +4,7 @@ import auth from './modules/auth';
 import sounds from './modules/sounds';
 import categories from './modules/categories';
 import bloodstorage from './modules/hien-mau';
+import expenses from './modules/sao-ke-khoan-chi';
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
     auth,
     categories,
     sounds,
-    bloodstorage
+    bloodstorage,
+    expenses
   }
 })

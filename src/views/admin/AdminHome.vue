@@ -60,6 +60,7 @@ export default {
       // { path: '/sounds', title: 'Sounds', icon: 'mdi-playlist-music'},
       // { path: '/categories', title: 'Categories', icon: 'mdi-folder-multiple' },
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
+      { path: '/sao-ke', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
     ]
   }),
   created() {

@@ -8,6 +8,7 @@ import Categories from '../views/admin/Categories';
 import Sounds from '../views/admin/Sounds';
 
 import HienMau from '../views/admin/hien-mau';
+import SaoKeKhoanChi from '../views/admin/sao-ke-khoan-chi';
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,7 @@ const routes = [
       { path: 'sounds', component: Sounds },
       { path: 'categories', component: Categories },
       { path: 'hien-mau', component: HienMau },
+      { path: 'sao-ke', component: SaoKeKhoanChi },
     ],
     meta: {
       requiresAuth: true
