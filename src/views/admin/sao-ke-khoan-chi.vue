@@ -10,7 +10,8 @@
 
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Tạo Khoản Chi</v-btn>
+              <v-btn v-if="actived" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Tạo Khoản Chi</v-btn>
+              <v-btn v-else disabled class="mb-2" elevation="2">Tạo Khoản Chi</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -46,9 +47,11 @@
             </v-card>
           </v-dialog>
 
-          <!-- <v-btn color="error" dark class="mb-2 ml-2" @click="exportExpenses">Mở khóa và Xóa sao kê</v-btn> -->
-          <v-btn text icon class="mb-2 ml-2" @click="unlock" color="#1DE9B6">
+          <v-btn v-if="actived" text icon class="mb-2 ml-2" @click="unlock" color="#1DE9B6">
             <v-icon>mdi-lock-open-variant</v-icon>
+          </v-btn>
+          <v-btn v-else text icon class="mb-2 ml-2" @click="unlock" color="error">
+            <v-icon>mdi-lock</v-icon>
           </v-btn>
           <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
@@ -102,6 +105,7 @@ import exportFromJSON from "export-from-json";
 export default {
   data() {
     return {
+      actived: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -180,6 +184,7 @@ export default {
       addExpense: "expenses/addExpense",
       updateExpense: "expenses/updateExpense",
       removeExpense: "expenses/removeExpense",
+      updateStatus: "allstatus/updateStatus",
     }),
 
     async initialize() {
@@ -187,6 +192,7 @@ export default {
       try {
         await this.loadExpenses;
         await this.loadAllStatus;
+        this.actived = JSON.stringify(this.allstatus.actived)
       } catch (e) {
         console.error(e);
       }
@@ -321,13 +327,16 @@ export default {
 
     async unlock() {
       this.loading = true;
-      const data = await this.expenses;
-      // const data = await this.allstatus;
-      console.log(data)
-      // const data = await this.allstatus;
-      // await data.forEach(async item => {
-      //   console.log(item)
-      // })
+      const data = await this.allstatus;
+      await data.forEach(async item => {
+        console.log(JSON.stringify(item))
+        //TODO: update actived
+        // await this.updateStatus({
+        //     index: this.editedIndex,
+        //     status: {},
+        //   });
+      })
+      this.actived = true
       this.loading = false;
     },
 
