@@ -5,6 +5,7 @@ import sounds from './modules/sounds';
 import categories from './modules/categories';
 import bloodstorage from './modules/hien-mau';
 import expenses from './modules/sao-ke-khoan-chi';
+import allstatus from './modules/status';
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     categories,
     sounds,
     bloodstorage,
-    expenses
+    expenses,
+    allstatus
   }
 })

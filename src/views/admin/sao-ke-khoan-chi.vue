@@ -25,16 +25,6 @@
                         <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Người Chi">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="10" sm="10" md="10">
-                        <v-text-field disabled :rules="fieldRule" v-model="editedItem.time" label="Thời Gian">
-                        </v-text-field>
-                      </v-col>
-                      <v-col cols="2" sm="2" md="2">
-                        <v-btn text icon class="mb-2 ml-2" @click="refreshTime">
-                          <v-icon>mdi-refresh</v-icon>
-                        </v-btn>
-                      </v-col>
-
                       <v-col cols="12" sm="12" md="12">
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.reason"
                           label="Khoản Chi"></v-text-field>
@@ -56,8 +46,12 @@
             </v-card>
           </v-dialog>
 
-          <v-btn text icon class="mb-2 ml-2" @click="initialize">
-            <v-icon>mdi-refresh</v-icon>
+          <!-- <v-btn color="error" dark class="mb-2 ml-2" @click="exportExpenses">Mở khóa và Xóa sao kê</v-btn> -->
+          <v-btn text icon class="mb-2 ml-2" @click="unlock" color="#1DE9B6">
+            <v-icon>mdi-lock-open-variant</v-icon>
+          </v-btn>
+          <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
           <v-btn text icon class="mb-2 ml-2" @click="exportExpenses" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
@@ -157,11 +151,11 @@ export default {
   computed: {
     ...mapActions({
       loadExpenses: "expenses/loadExpenses",
+      loadAllStatus: "allstatus/loadAllStatus",
     }),
     ...mapGetters({
       expenses: "expenses/getExpenses",
-    }),
-    ...mapGetters({
+      allstatus: "allstatus/getAllStatus",
       user: "auth/user",
     }),
     formTitle() {
@@ -192,6 +186,7 @@ export default {
       this.loading = true;
       try {
         await this.loadExpenses;
+        await this.loadAllStatus;
       } catch (e) {
         console.error(e);
       }
@@ -242,6 +237,9 @@ export default {
       if (!this.$refs.dialogForm.validate()) return;
 
       if (this.editedIndex > -1) {
+        const current = new Date()
+        this.editedItem.time = current.toLocaleString()
+        this.defaultItem.time = current.toLocaleString()
         this.loading = true;
         try {
           await this.updateExpense({
@@ -267,6 +265,9 @@ export default {
       } else {
         // this.editedItem.total = 1
         this.loading = true;
+        const current = new Date()
+        this.editedItem.time = current.toLocaleString()
+        this.defaultItem.time = current.toLocaleString()
         try {
           await this.addExpense(this.editedItem);
           this.loading = false;
@@ -288,13 +289,14 @@ export default {
       }
     },
 
-
     async exportExpenses() {
       this.loading = true;
+      const currentDay = new Date().getDate();
+      const currentMonth = new Date().getMonth() + 1;
       try {
         if (this.user.data.email === 'gp@mixi.com') {
           const data = this.expenses;
-          const fileName = "sao-ke-khoan-chi";
+          const fileName = "sao-ke-khoan-chi-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.csv;
 
           if (data) exportFromJSON({ data, fileName, exportType });
@@ -315,6 +317,46 @@ export default {
         console.error(e);
       }
       this.loading = false;
+    },
+
+    async unlock() {
+      this.loading = true;
+      const data = await this.expenses;
+      // const data = await this.allstatus;
+      console.log(data)
+      // const data = await this.allstatus;
+      // await data.forEach(async item => {
+      //   console.log(item)
+      // })
+      this.loading = false;
+    },
+
+    async deleteAll() {
+      this.loading = true;
+      if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+        this.loading = true;
+        try {
+          const data = this.expenses;
+          await data.forEach(async item => {
+            await this.removeExpense(item)
+          })
+
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Xóa thông tin thành công";
+          this.loading = false;
+        } catch (e) {
+          this.loading = false;
+
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Xóa thông tin không thành công";
+
+          console.error(e);
+        }
+      } else {
+        this.loading = false;
+      }
     }
   },
 
