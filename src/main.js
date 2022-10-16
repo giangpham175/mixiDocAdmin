@@ -1,11 +1,10 @@
-import Vue from 'vue';
-import App from './App.vue';
-import * as firebase from 'firebase';
-import router from './router';
-import store from './store';
-import vuetify from './plugins/vuetify';
-import { firestorePlugin } from 'vuefire'
-
+import Vue from "vue";
+import App from "./App.vue";
+import * as firebase from "firebase";
+import router from "./router";
+import store from "./store";
+import vuetify from "./plugins/vuetify";
+import { firestorePlugin } from "vuefire";
 
 Vue.config.productionTip = false;
 
@@ -17,21 +16,21 @@ const configOptions = {
   projectId: "gp-i-money",
   storageBucket: "gp-i-money.appspot.com",
   messagingSenderId: "985079797010",
-  appId: "1:985079797010:web:a32b7fe1f464db740c8fcb"
+  appId: "1:985079797010:web:a32b7fe1f464db740c8fcb",
 };
 
 firebase.initializeApp(configOptions);
 
 let app;
 
-firebase.auth().onAuthStateChanged(user => {
-  store.dispatch('auth/fetchUser', user);
-  if(!app) {
+firebase.auth().onAuthStateChanged((user) => {
+  store.dispatch("auth/fetchUser", user);
+  if (!app) {
     new Vue({
       store,
       router,
       vuetify,
-      render: h => h(App)
-    }).$mount('#app');
+      render: (h) => h(App),
+    }).$mount("#app");
   }
 });

@@ -1,7 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer" app clipped>
+    <v-navigation-drawer v-model="drawer" app clipped>
       <v-list dense>
         <v-list-item-group color="primary">
           <v-list-item v-for="(menu, index) in menus" :key="index" @click="goto(menu.path)">
@@ -23,7 +22,9 @@
       <v-btn text icon @click="dark = !dark">
         <v-icon>{{ dark ? 'mdi-brightness-4' : 'mdi-brightness-6'}}</v-icon>
       </v-btn>
-      <v-btn text icon @click="logOut()"><v-icon>mdi-power</v-icon></v-btn>
+      <v-btn text icon @click="logOut()">
+        <v-icon>mdi-power</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -38,8 +39,9 @@
 
     <v-footer app>
       <div class="flex text-center">
-        <span class="lead text--secondary text-center" >Created by ❤️
-          <a href="https://discordapp.com/users/252435602383962113/" class="text-decoration-none" target="_blank">G Null</a>
+        <span class="lead text--secondary text-center">Created by ❤️
+          <a href="https://discordapp.com/users/252435602383962113/" class="text-decoration-none" target="_blank">G
+            Null</a>
         </span>
       </div>
     </v-footer>
@@ -70,8 +72,8 @@ export default {
   },
   computed: {
     ...mapActions({
-        loadSounds: 'sounds/loadSounds',
-        loadCategories: 'categories/loadCategories',
+      loadSounds: 'sounds/loadSounds',
+      loadCategories: 'categories/loadCategories',
     }),
   },
   methods: {
@@ -80,15 +82,15 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          this.$router.replace({path: '/'});
+          this.$router.replace({ path: '/' });
         });
     },
     goto(newPath) {
-      this.$router.push({path: this.path + newPath}).catch(()=>{});
+      this.$router.push({ path: this.path + newPath }).catch(() => { });
     }
   },
   watch: {
-    dark: function() {
+    dark: function () {
       this.$vuetify.theme.dark = this.dark;
     }
   }
