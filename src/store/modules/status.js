@@ -22,20 +22,22 @@ const allstatus = {
   },
   actions: {
     async loadAllStatus({ commit }) {
-      const doc = await firestore()
+      const querySnapshot = await firestore()
         .collection(collName)
-        .doc("tKXOyLxg9EemXBfIKVUS")
         .get();
+      let status;
+      let allstatus = querySnapshot.docs.map(function(doc) {
+        status = doc.data();
+        status.id = doc.id;
+        return status;
+      });
+      commit("SET_ALLSTATUS", allstatus);
 
-      //   console.log(doc.data());
-      //   let status;
-      //   if (doc.data()) {
-      //     status = doc.data();
-      //     status.id = doc.id;
-      //     return status;
-      //   }
-
-      commit("SET_ALLSTATUS", doc.data());
+      // const doc = await firestore()
+      //   .collection(collName)
+      //   .doc("tKXOyLxg9EemXBfIKVUS")
+      //   .get();
+      // commit("SET_ALLSTATUS", doc.data());
     },
     async updateStatus({ commit }, payload) {
       await firestore()

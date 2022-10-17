@@ -105,7 +105,7 @@ import exportFromJSON from "export-from-json";
 export default {
   data() {
     return {
-      actived: false,
+      actived: true,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -192,7 +192,12 @@ export default {
       try {
         await this.loadExpenses;
         await this.loadAllStatus;
-        this.actived = JSON.stringify(this.allstatus.actived)
+        const status = await this.allstatus;
+        status.forEach(e => {
+          if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
+            this.actived = e.actived;
+          }
+        })
       } catch (e) {
         console.error(e);
       }
@@ -327,16 +332,17 @@ export default {
 
     async unlock() {
       this.loading = true;
-      // const data = await this.allstatus;
-      // await data.forEach(async item => {
-      //   console.log(JSON.stringify(item))
-      // TODO: update actived
-      // await this.updateStatus({
-      //     index: this.editedIndex,
-      //     status: {},
-      //   });
-      // })
-      // this.actived = true
+      const data = await this.allstatus;
+      await data.forEach(async e => {
+        if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
+          e.actived = true
+          this.actived = true
+          await this.updateStatus({
+            index: this.editedIndex,
+            status: e,
+          });
+        }
+      })
       this.loading = false;
     },
 
