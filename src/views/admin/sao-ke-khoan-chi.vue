@@ -327,16 +327,16 @@ export default {
 
     async unlock() {
       this.loading = true;
-      const data = await this.allstatus;
-      await data.forEach(async item => {
-        console.log(JSON.stringify(item))
-        //TODO: update actived
-        // await this.updateStatus({
-        //     index: this.editedIndex,
-        //     status: {},
-        //   });
-      })
-      this.actived = true
+      // const data = await this.allstatus;
+      // await data.forEach(async item => {
+      //   console.log(JSON.stringify(item))
+      // TODO: update actived
+      // await this.updateStatus({
+      //     index: this.editedIndex,
+      //     status: {},
+      //   });
+      // })
+      // this.actived = true
       this.loading = false;
     },
 

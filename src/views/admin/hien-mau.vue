@@ -37,6 +37,10 @@
                         <v-text-field disabled v-model="editedItem.total" label="Tổng" type="number">
                         </v-text-field>
                       </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field disabled v-model="editedItem.lasttime" label="Thời gian hiến máu lần cuối">
+                        </v-text-field>
+                      </v-col>
                       <v-col cols="6" sm="6" md="6">
                         <v-btn block color="warning" dark class="mb-2" @click="subtract">Đổi
                           điểm (-2)</v-btn>
@@ -57,8 +61,8 @@
             </v-card>
           </v-dialog>
 
-          <v-btn text icon class="mb-2 ml-2" @click="initialize">
-            <v-icon>mdi-refresh</v-icon>
+          <v-btn text icon class="mb-2 ml-2" @click="resetPoint" color="error">
+            <v-icon>mdi-file-restore-outline</v-icon>
           </v-btn>
           <v-btn text icon class="mb-2 ml-2" @click="exportBlood" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
@@ -140,20 +144,27 @@ export default {
           sortable: true,
           value: "total",
         },
+        // {
+        //   text: "Thời Gian Hiến Lần Cuối",
+        //   sortable: true,
+        //   value: "lasttime",
+        // },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
       editedIndex: -1,
       editedItem: {
         name: "",
         bloodtype: "",
-        accumulation: 1,
-        total: 1,
+        accumulation: 0,
+        total: 0,
+        lasttime: ""
       },
       defaultItem: {
         name: "",
         bloodtype: "",
-        accumulation: 1,
-        total: 1,
+        accumulation: 0,
+        total: 0,
+        lasttime: ""
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
@@ -164,8 +175,6 @@ export default {
     }),
     ...mapGetters({
       bloodstorage: "bloodstorage/getBloodStorage",
-    }),
-    ...mapGetters({
       user: "auth/user",
     }),
     formTitle() {
@@ -296,6 +305,9 @@ export default {
       if (this.editedIndex > -1) {
         this.loading = true;
 
+        const current = new Date()
+        this.editedItem.lasttime = current.toLocaleString()
+        this.defaultItem.lasttime = current.toLocaleString()
         if (this.editedItem.accumulation === 0) {
           this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
           this.editedItem.total = Number(this.editedItem.total) + 1
@@ -360,6 +372,40 @@ export default {
       }
       this.loading = false;
     },
+
+    // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
+    async resetPoint() {
+      this.loading = true;
+      if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
+        this.loading = true;
+        try {
+          const data = this.bloodstorage;
+          await data.forEach(async item => {
+            item.accumulation = 0
+            await this.updateBlood({
+              index: this.editedIndex,
+              blood: item,
+            });
+          })
+
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Reset điểm tích lũy thành công";
+          this.loading = false;
+        } catch (e) {
+          this.loading = false;
+
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Reset điểm tích lũy không thành công";
+
+          console.error(e);
+        }
+      } else {
+        this.loading = false;
+      }
+      this.loading = false;
+    }
   },
 
   filters: {
@@ -373,9 +419,3 @@ export default {
   },
 };
 </script>
-
-<!-- <style scoped>
-.bloodtype input {
-  text-transform: uppercase;
-}
-</style> -->
