@@ -215,7 +215,7 @@ export default {
       if (confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
-          if (this.user.data.email === this.editedItem.name) {
+          if (this.user.data.email === item.name) {
             await this.removeExpense(item);
             this.loading = false;
 
@@ -223,6 +223,7 @@ export default {
             this.snackColor = "success";
             this.snackText = "Xóa thông tin thành công";
           }
+          this.loading = false;
         } catch (e) {
           this.loading = false;
 
@@ -345,30 +346,31 @@ export default {
 
     async unlock() {
       this.loading = true;
-      const data = await this.allstatus;
-      await data.forEach(async e => {
-        if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
-          e.actived = true
-          this.actived = true
-          await this.updateStatus({
-            index: this.editedIndex,
-            status: e,
-          });
-        }
-      })
+      if (this.user.data.email === 'gp@mixi.com') {
+        const data = await this.allstatus;
+        await data.forEach(async e => {
+          if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
+            e.actived = true
+            this.actived = true
+            await this.updateStatus({
+              index: this.editedIndex,
+              status: e,
+            });
+          }
+        })
+      }
       this.loading = false;
     },
 
     async deleteAll() {
       this.loading = true;
-      if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (this.user.data.email === 'gp@mixi.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.expenses;
           await data.forEach(async item => {
             await this.removeExpense(item)
           })
-
           this.snack = true;
           this.snackColor = "success";
           this.snackText = "Xóa thông tin thành công";
