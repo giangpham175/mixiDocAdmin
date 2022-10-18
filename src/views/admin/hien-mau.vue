@@ -410,7 +410,23 @@ export default {
         this.loading = false;
       }
       this.loading = false;
-    }
+    },
+
+    async addOldData() {
+      const data = null
+      if (data) {
+        try {
+          data.forEach(async e => {
+            await this.addBlood(e);
+          })
+        } catch (e) {
+          this.loading = false;
+          console.error(e);
+        }
+      } else {
+        console.log('import error')
+      }
+    },
   },
 
   filters: {
