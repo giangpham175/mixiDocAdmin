@@ -321,7 +321,7 @@ export default {
 
           const data = this.expenses;
           const fileName = "sao-ke-khoan-chi-" + currentDay + "-" + currentMonth;
-          const exportType = exportFromJSON.types.csv;
+          const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
         }

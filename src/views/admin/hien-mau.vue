@@ -365,7 +365,7 @@ export default {
         if (this.user.data.email === 'gp@mixi.com') {
           const data = this.bloodstorage;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
-          const exportType = exportFromJSON.types.csv;
+          const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
         }
@@ -381,19 +381,22 @@ export default {
       if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
         this.loading = true;
         try {
-          const data = this.bloodstorage;
-          await data.forEach(async item => {
-            item.accumulation = 0
-            await this.updateBlood({
-              index: this.editedIndex,
-              blood: item,
-            });
-          })
+          if (this.user.data.email === 'gp@mixi.com') {
+            const data = this.bloodstorage;
+            await data.forEach(async item => {
+              item.accumulation = 0
+              item.total = 0
+              await this.updateBlood({
+                index: this.editedIndex,
+                blood: item,
+              });
+            })
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Reset điểm tích lũy thành công";
-          this.loading = false;
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Reset điểm tích lũy thành công";
+            this.loading = false;
+          }
         } catch (e) {
           this.loading = false;
 
