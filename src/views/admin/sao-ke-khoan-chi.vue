@@ -212,17 +212,17 @@ export default {
 
     async deleteItem(item) {
       this.loading = true;
-      if (confirm("Chắc chắn là XÓA nha?")) {
+      if (this.user.data.email === item.name && confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
-          if (this.user.data.email === item.name) {
-            await this.removeExpense(item);
-            this.loading = false;
+          // if (this.user.data.email === item.name) {
+          await this.removeExpense(item);
+          this.loading = false;
 
-            this.snack = true;
-            this.snackColor = "success";
-            this.snackText = "Xóa thông tin thành công";
-          }
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Xóa thông tin thành công";
+          // }
           this.loading = false;
         } catch (e) {
           this.loading = false;

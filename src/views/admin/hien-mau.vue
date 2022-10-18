@@ -378,25 +378,25 @@ export default {
     // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
     async resetPoint() {
       this.loading = true;
-      if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là RESET HẾT đó nha?")) {
         this.loading = true;
         try {
-          if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-            const data = this.bloodstorage;
-            await data.forEach(async item => {
-              item.accumulation = 0
-              item.total = 0
-              await this.updateBlood({
-                index: this.editedIndex,
-                blood: item,
-              });
-            })
+          // if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+          const data = this.bloodstorage;
+          await data.forEach(async item => {
+            item.accumulation = 0
+            item.total = 0
+            await this.updateBlood({
+              index: this.editedIndex,
+              blood: item,
+            });
+          })
 
-            this.snack = true;
-            this.snackColor = "success";
-            this.snackText = "Reset điểm tích lũy thành công";
-            this.loading = false;
-          }
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Reset điểm tích lũy thành công";
+          this.loading = false;
+          // }
         } catch (e) {
           this.loading = false;
 
