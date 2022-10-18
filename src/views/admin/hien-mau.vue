@@ -361,11 +361,8 @@ export default {
       this.loading = true;
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
-      console.log('🔥')
-      console.log(this.user.data.email)
       try {
         if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-          console.log('🔥checked🔥')
           const data = this.bloodstorage;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
