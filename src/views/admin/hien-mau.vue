@@ -90,9 +90,9 @@
         <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
           mdi-plus-minus-variant
         </v-icon>
-        <v-icon small @click="deleteItem(item)" color="error">
+        <!-- <v-icon small @click="deleteItem(item)" color="error">
           mdi-delete
-        </v-icon>
+        </v-icon> -->
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -359,10 +359,12 @@ export default {
 
     async exportBlood() {
       this.loading = true;
+      const currentDay = new Date().getDate();
+      const currentMonth = new Date().getMonth() + 1;
       try {
         if (this.user.data.email === 'gp@mixi.com') {
           const data = this.bloodstorage;
-          const fileName = "hien-mau";
+          const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.csv;
 
           if (data) exportFromJSON({ data, fileName, exportType });

@@ -215,13 +215,14 @@ export default {
       if (confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
-          await this.removeExpense(item);
-          // storage().refFromURL(item.image).delete();
-          this.loading = false;
+          if (this.user.data.email === this.editedItem.name) {
+            await this.removeExpense(item);
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Xóa thông tin thành công";
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Xóa thông tin thành công";
+          }
         } catch (e) {
           this.loading = false;
 
@@ -306,6 +307,18 @@ export default {
       const currentMonth = new Date().getMonth() + 1;
       try {
         if (this.user.data.email === 'gp@mixi.com') {
+          const allStatus = await this.allstatus;
+          await allStatus.forEach(async e => {
+            if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === true) {
+              e.actived = false
+              this.actived = false
+              await this.updateStatus({
+                index: this.editedIndex,
+                status: e,
+              });
+            }
+          })
+
           const data = this.expenses;
           const fileName = "sao-ke-khoan-chi-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.csv;
