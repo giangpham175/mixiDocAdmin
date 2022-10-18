@@ -362,7 +362,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.user.data.email === 'gp@mixi.com') {
+        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
           const data = this.bloodstorage;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
@@ -381,7 +381,7 @@ export default {
       if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
         this.loading = true;
         try {
-          if (this.user.data.email === 'gp@mixi.com') {
+          if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
             const data = this.bloodstorage;
             await data.forEach(async item => {
               item.accumulation = 0

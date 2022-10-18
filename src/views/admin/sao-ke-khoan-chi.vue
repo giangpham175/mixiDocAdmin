@@ -307,7 +307,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.user.data.email === 'gp@mixi.com') {
+        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
           const allStatus = await this.allstatus;
           await allStatus.forEach(async e => {
             if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === true) {
@@ -346,7 +346,7 @@ export default {
 
     async unlock() {
       this.loading = true;
-      if (this.user.data.email === 'gp@mixi.com') {
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
         const data = await this.allstatus;
         await data.forEach(async e => {
           if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
@@ -364,7 +364,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.user.data.email === 'gp@mixi.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.expenses;
