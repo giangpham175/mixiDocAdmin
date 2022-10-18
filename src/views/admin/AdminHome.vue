@@ -17,7 +17,7 @@
 
     <v-app-bar app clipped-left dark color="primary">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Mixi Doctor</v-toolbar-title>
       <v-spacer />
       <v-btn text icon @click="dark = !dark">
         <v-icon>{{ dark ? 'mdi-brightness-4' : 'mdi-brightness-6'}}</v-icon>
@@ -55,7 +55,7 @@ import { mapActions } from 'vuex';
 export default {
   data: () => ({
     dark: false,
-    path: '/admin',
+    path: '/mixi',
     drawer: null,
     menus: [
       // { path: '', title: 'Dashboard', icon: 'mdi-view-dashboard' },

@@ -66,7 +66,7 @@ export default {
           .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
             this.disabled = false;
-            this.$router.replace({ path: "/admin" });
+            this.$router.replace({ path: "/mixi" });
           })
           .catch(err => {
             this.disabled = false;
