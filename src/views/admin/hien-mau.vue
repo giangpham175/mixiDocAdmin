@@ -116,6 +116,7 @@ import exportFromJSON from "export-from-json";
 export default {
   data() {
     return {
+      timer: '',
       snack: false,
       snackColor: "",
       snackText: "",
@@ -190,6 +191,7 @@ export default {
 
   created() {
     this.initialize();
+    this.timer = setInterval(this.initialize, 250000);
   },
 
   methods: {
@@ -207,6 +209,10 @@ export default {
         console.error(e);
       }
       this.loading = false;
+    },
+
+    cancelAutoUpdate() {
+      clearInterval(this.timer);
     },
 
     editItem(item) {
@@ -427,6 +433,10 @@ export default {
         console.log('import error')
       }
     },
+  },
+
+  beforeUnmount() {
+    this.cancelAutoUpdate();
   },
 
   filters: {

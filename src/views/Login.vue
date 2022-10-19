@@ -6,7 +6,7 @@
           <v-card class="mx-auto" shaped elevation="20">
 
             <v-toolbar color="primary" dark flat>
-              <v-toolbar-title class="headline">Admin Panel</v-toolbar-title>
+              <v-toolbar-title class="headline">Mixi Doctor</v-toolbar-title>
             </v-toolbar>
 
             <v-card-text>
