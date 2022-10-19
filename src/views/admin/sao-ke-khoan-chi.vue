@@ -10,8 +10,8 @@
 
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-if="actived" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Tạo Khoản Chi</v-btn>
-              <v-btn v-else disabled class="mb-2" elevation="2">Tạo Khoản Chi</v-btn>
+              <v-btn v-if="actived" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Tạo</v-btn>
+              <v-btn v-else disabled class="mb-2" elevation="2">Tạo</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -28,7 +28,7 @@
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.reason"
-                          label="Khoản Chi"></v-text-field>
+                          label="Nội Dung Chi"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
                         <v-text-field :disabled="loading" v-model="editedItem.amount" label="Số Tiền Chi" type="number">
@@ -125,7 +125,7 @@ export default {
           value: "time",
         },
         {
-          text: "Khoản Chi",
+          text: "Nội Dung Chi",
           sortable: true,
           value: "reason",
         },

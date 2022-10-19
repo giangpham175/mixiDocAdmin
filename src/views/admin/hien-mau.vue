@@ -10,7 +10,7 @@
 
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Đăng ký mới</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Đăng ký</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -25,15 +25,15 @@
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="4" sm="4" md="4">
-                        <v-text-field :disabled="loading" v-model="editedItem.bloodtype"
-                          label="Nhóm Máu" @keyup="uppercase" class="bloodtype"></v-text-field>
-                      </v-col>
-                      <v-col cols="4" sm="4" md="4">
+                      <!-- <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" v-model="editedItem.bloodtype" label="Nhóm Máu"
+                          @keyup="uppercase" class="bloodtype"></v-text-field>
+                      </v-col> -->
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field disabled v-model="editedItem.accumulation" label="Tích Lũy" type="number">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="4" sm="4" md="4">
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field disabled v-model="editedItem.total" label="Tổng" type="number">
                         </v-text-field>
                       </v-col>
@@ -41,11 +41,11 @@
                         <v-text-field disabled v-model="editedItem.lasttime" label="Thời gian hiến máu lần cuối">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="6" sm="6" md="6">
+                      <v-col cols="12" sm="12" md="6">
                         <v-btn block color="warning" dark class="mb-2" @click="subtract">Đổi
                           điểm (-2)</v-btn>
                       </v-col>
-                      <v-col cols="6" sm="6" md="6">
+                      <v-col cols="12" sm="12" md="6">
                         <v-btn block color="primary" dark class="mb-2" @click="plus">Tích điểm (+1)</v-btn>
                       </v-col>
                     </v-row>
@@ -131,11 +131,6 @@ export default {
           value: "name",
         },
         {
-          text: "Nhóm Máu",
-          sortable: true,
-          value: "bloodtype",
-        },
-        {
           text: "Tích Lũy",
           sortable: true,
           value: "accumulation",
@@ -146,6 +141,11 @@ export default {
           value: "total",
         },
         // {
+        //   text: "Nhóm Máu",
+        //   sortable: true,
+        //   value: "bloodtype",
+        // },
+        // {
         //   text: "Thời Gian Hiến Lần Cuối",
         //   sortable: true,
         //   value: "lasttime",
@@ -155,17 +155,17 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
-        bloodtype: "",
         accumulation: 0,
         total: 0,
-        lasttime: ""
+        lasttime: "",
+        // bloodtype: "",
       },
       defaultItem: {
         name: "",
-        bloodtype: "",
         accumulation: 0,
         total: 0,
-        lasttime: ""
+        lasttime: "",
+        // bloodtype: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
@@ -270,14 +270,14 @@ export default {
 
           this.snack = true;
           this.snackColor = "success";
-          this.snackText = "Xóa thông tin người này thành công";
+          this.snackText = "Lưu thông tin thành công";
         } catch (e) {
           this.loading = false;
           this.close();
 
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = "Xóa thông tin người này không thành công";
+          this.snackText = "Lưu thông tin không thành công";
 
           console.error(e);
         }
@@ -291,14 +291,14 @@ export default {
 
           this.snack = true;
           this.snackColor = "success";
-          this.snackText = "Thêm thông tin người này thành công";
+          this.snackText = "Thêm thông tin thành công";
         } catch (e) {
           this.loading = false;
           this.close();
 
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = "Thêm thông tin người này không thành công";
+          this.snackText = "Thêm thông tin không thành công";
 
           console.error(e);
         }
