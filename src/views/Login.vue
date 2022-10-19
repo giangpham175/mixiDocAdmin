@@ -29,6 +29,14 @@
                 </span>
               </v-btn>
             </v-card-actions>
+
+            <v-row align="center" justify="center">
+              <span class="lead text--secondary text-center my-2">Contact 
+                <a href="https://discordapp.com/users/252435602383962113/" class="text-decoration-none"
+                  target="_blank">G
+                  Null</a> to Register
+              </span>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
