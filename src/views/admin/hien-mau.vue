@@ -26,7 +26,7 @@
                         </v-text-field>
                       </v-col>
                       <v-col cols="4" sm="4" md="4">
-                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.bloodtype"
+                        <v-text-field :disabled="loading" v-model="editedItem.bloodtype"
                           label="Nhóm Máu" @keyup="uppercase" class="bloodtype"></v-text-field>
                       </v-col>
                       <v-col cols="4" sm="4" md="4">
