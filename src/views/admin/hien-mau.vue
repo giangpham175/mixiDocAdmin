@@ -145,11 +145,11 @@ export default {
         //   sortable: true,
         //   value: "bloodtype",
         // },
-        // {
-        //   text: "Thời Gian Hiến Lần Cuối",
-        //   sortable: true,
-        //   value: "lasttime",
-        // },
+        {
+          text: "Thời Gian Hiến Lần Cuối",
+          sortable: true,
+          value: "lasttime",
+        },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
       editedIndex: -1,

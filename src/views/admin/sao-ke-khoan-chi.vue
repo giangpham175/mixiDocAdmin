@@ -31,7 +31,8 @@
                           label="Nội Dung Chi"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field :disabled="loading" v-model="editedItem.amount" label="Số Tiền Chi" type="number">
+                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.amount"
+                          label="Số Tiền Chi" type="number">
                         </v-text-field>
                       </v-col>
                     </v-row>
@@ -98,14 +99,13 @@
 </template>
 
 <script>
-// import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
 
 export default {
   data() {
     return {
-      actived: true,
+      actived: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -185,6 +185,7 @@ export default {
       updateExpense: "expenses/updateExpense",
       removeExpense: "expenses/removeExpense",
       updateStatus: "allstatus/updateStatus",
+      loadSaoKeStatus: "allstatus/loadSaoKeStatus",
     }),
 
     async initialize() {
@@ -192,12 +193,9 @@ export default {
       try {
         await this.loadExpenses;
         await this.loadAllStatus;
-        const status = await this.allstatus;
-        status.forEach(e => {
-          if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
-            this.actived = e.actived;
-          }
-        })
+        const status = await this.loadSaoKeStatus();
+        const statusDetail = status.data()
+        this.actived = statusDetail.actived
       } catch (e) {
         console.error(e);
       }
@@ -249,55 +247,63 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.editedIndex > -1) {
-        const current = new Date()
-        this.editedItem.time = current.toLocaleString()
-        this.defaultItem.time = current.toLocaleString()
-        this.loading = true;
-        try {
-          await this.updateExpense({
-            index: this.editedIndex,
-            expense: this.editedItem,
-          });
-          this.loading = false;
-          this.close();
+      const status = await this.loadSaoKeStatus();
+      const statusDetail = status.data()
+      if (statusDetail.actived) {
+        if (this.editedIndex > -1) {
+          const current = new Date()
+          this.editedItem.time = current.toLocaleString()
+          this.defaultItem.time = current.toLocaleString()
+          this.loading = true;
+          try {
+            await this.updateExpense({
+              index: this.editedIndex,
+              expense: this.editedItem,
+            });
+            this.loading = false;
+            this.close();
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Xóa thông tin thành công";
-        } catch (e) {
-          this.loading = false;
-          this.close();
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Xóa thông tin thành công";
+          } catch (e) {
+            this.loading = false;
+            this.close();
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Xóa thông tin không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Xóa thông tin không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
+        } else {
+          // this.editedItem.total = 1
+          this.loading = true;
+          const current = new Date()
+          this.editedItem.time = current.toLocaleString()
+          this.defaultItem.time = current.toLocaleString()
+          try {
+            await this.addExpense(this.editedItem);
+            this.loading = false;
+            this.close();
+
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Thêm thông tin thành công";
+          } catch (e) {
+            this.loading = false;
+            this.close();
+
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Thêm thông tin không thành công";
+
+            console.error(e);
+          }
         }
       } else {
-        // this.editedItem.total = 1
-        this.loading = true;
-        const current = new Date()
-        this.editedItem.time = current.toLocaleString()
-        this.defaultItem.time = current.toLocaleString()
-        try {
-          await this.addExpense(this.editedItem);
-          this.loading = false;
-          this.close();
-
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Thêm thông tin thành công";
-        } catch (e) {
-          this.loading = false;
-          this.close();
-
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Thêm thông tin không thành công";
-
-          console.error(e);
+        if (confirm("Trạng thái Sao Kê hiện đang bị khóa. Vui lòng chờ Bác sĩ Hanwool kiểm tra")) {
+          location.reload();
         }
       }
     },
