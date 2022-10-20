@@ -32,12 +32,6 @@ const allstatus = {
         return status;
       });
       commit("SET_ALLSTATUS", allstatus);
-
-      // const doc = await firestore()
-      //   .collection(collName)
-      //   .doc("tKXOyLxg9EemXBfIKVUS")
-      //   .get();
-      // commit("SET_ALLSTATUS", doc.data());
     },
     async updateStatus({ commit }, payload) {
       await firestore()
