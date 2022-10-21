@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="bloodstorage" :search="search" class="elevation-1" :loading="loading"
+    <v-data-table :headers="headers" :items="newbies" :search="search" class="elevation-1" :loading="loading"
       loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Danh Sách Hiến Máu</v-toolbar-title>
+          <v-toolbar-title>Cư Dân Mới</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
 
@@ -25,32 +25,13 @@
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="4" sm="4" md="4">
-                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.bloodtype"
-                          label="Nhóm Máu" @keyup="uppercase" class="bloodtype"></v-text-field>
-                      </v-col>
-                      <v-col cols="4" sm="4" md="4">
-                        <v-text-field disabled v-model="editedItem.accumulation" label="Tích Lũy" type="number">
-                        </v-text-field>
-                      </v-col>
-                      <v-col cols="4" sm="4" md="4">
-                        <v-text-field disabled v-model="editedItem.total" label="Tổng" type="number">
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field :disabled="loading" v-model="editedItem.gender" label="Giới Tính">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field disabled v-model="editedItem.lasttime" label="Thời gian hiến máu lần cuối">
+                        <v-text-field :disabled="loading" v-model="editedItem.dob" label="Năm Sinh" type="number">
                         </v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field disabled v-model="editedItem.actionBy" label="Ghi nhận bởi">
-                        </v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="12" md="6">
-                        <v-btn block color="warning" dark class="mb-2" @click="subtract">Đổi
-                          điểm (-2)</v-btn>
-                      </v-col>
-                      <v-col cols="12" sm="12" md="6">
-                        <v-btn block color="primary" dark class="mb-2" @click="plus">Tích điểm (+1)</v-btn>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -68,7 +49,7 @@
           <v-btn text icon class="mb-2 ml-2" @click="resetPoint" color="error">
             <v-icon>mdi-file-restore-outline</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="exportBlood" color="#2E7D32">
+          <v-btn text icon class="mb-2 ml-2" @click="exportNewbie" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>
@@ -92,11 +73,11 @@
 
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
-          mdi-plus-minus-variant
+          mdi-sticker-check
         </v-icon>
         <!-- <v-icon small @click="deleteItem(item)" color="error">
-          mdi-delete
-        </v-icon> -->
+            mdi-delete
+          </v-icon> -->
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -111,7 +92,7 @@
     </v-snackbar>
   </div>
 </template>
-
+  
 <script>
 // import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
@@ -134,53 +115,39 @@ export default {
           value: "name",
         },
         {
-          text: "Tích Lũy",
+          text: "Giới Tính",
           sortable: true,
-          value: "accumulation",
+          value: "gender",
         },
         {
-          text: "Tổng",
+          text: "Năm Sinh",
           sortable: true,
-          value: "total",
-        },
-        {
-          text: "Nhóm Máu",
-          sortable: true,
-          value: "bloodtype",
-        },
-        {
-          text: "Thời Gian Hiến Lần Cuối",
-          sortable: true,
-          value: "lasttime",
+          value: "dob",
         },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
       editedIndex: -1,
       editedItem: {
         name: "",
-        accumulation: 0,
-        total: 0,
-        lasttime: "",
-        actionBy: "",
-        bloodtype: "",
+        gender: "",
+        dob: "",
+        checked: false
       },
       defaultItem: {
         name: "",
-        accumulation: 0,
-        total: 0,
-        lasttime: "",
-        actionBy: "",
-        bloodtype: "",
+        gender: "",
+        dob: "",
+        checked: false
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
   },
   computed: {
     ...mapActions({
-      loadBloodStorage: "bloodstorage/loadBloodStorage",
+      loadNewbies: "newbies/loadNewbies",
     }),
     ...mapGetters({
-      bloodstorage: "bloodstorage/getBloodStorage",
+      newbies: "newbies/getNewbies",
       user: "auth/user",
     }),
     formTitle() {
@@ -200,15 +167,15 @@ export default {
 
   methods: {
     ...mapActions({
-      addBlood: "bloodstorage/addBlood",
-      updateBlood: "bloodstorage/updateBlood",
-      removeBlood: "bloodstorage/removeBlood",
+      addNewbie: "newbies/addNewbie",
+      updateNewbie: "newbies/updateNewbie",
+      removeNewbie: "newbies/removeNewbie",
     }),
 
     async initialize() {
       this.loading = true;
       try {
-        await this.loadBloodStorage;
+        await this.loadNewbies;
       } catch (e) {
         console.error(e);
       }
@@ -216,7 +183,7 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.bloodstorage.indexOf(item);
+      this.editedIndex = this.newbies.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
@@ -226,7 +193,7 @@ export default {
       if (confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
-          await this.removeBlood(item);
+          await this.removeNewbie(item);
           // storage().refFromURL(item.image).delete();
           this.loading = false;
 
@@ -261,9 +228,9 @@ export default {
       if (this.editedIndex > -1) {
         this.loading = true;
         try {
-          await this.updateBlood({
+          await this.updateNewbie({
             index: this.editedIndex,
-            blood: this.editedItem,
+            newbie: this.editedItem,
           });
           this.loading = false;
           this.close();
@@ -285,7 +252,7 @@ export default {
         // this.editedItem.total = 1
         this.loading = true;
         try {
-          await this.addBlood(this.editedItem);
+          await this.addNewbie(this.editedItem);
           this.loading = false;
           this.close();
 
@@ -305,73 +272,13 @@ export default {
       }
     },
 
-    async plus() {
-      if (!this.$refs.dialogForm.validate()) return;
-
-      if (this.editedIndex > -1) {
-        this.loading = true;
-
-        const current = new Date()
-        this.editedItem.lasttime = current.toLocaleString()
-        this.defaultItem.lasttime = current.toLocaleString()
-        this.editedItem.actionBy = this.user.data.displayName
-        this.defaultItem.actionBy = this.user.data.displayName
-        if (this.editedItem.accumulation === 0) {
-          this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
-          this.editedItem.total = Number(this.editedItem.total) + 1
-        } else {
-          this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
-          this.editedItem.total = Number(this.editedItem.total) + 1
-        }
-        try {
-          await this.updateBlood({
-            index: this.editedIndex,
-            blood: this.editedItem,
-          });
-          this.loading = false;
-
-        } catch (e) {
-          this.loading = false;
-          this.close();
-          console.error(e);
-        }
-      }
-    },
-
-    async subtract() {
-      if (!this.$refs.dialogForm.validate()) return;
-
-      if (this.editedIndex > -1) {
-        if (this.editedItem.accumulation >= 2) {
-          this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
-        }
-
-        try {
-          await this.updateBlood({
-            index: this.editedIndex,
-            blood: this.editedItem,
-          });
-          this.loading = false;
-
-        } catch (e) {
-          this.loading = false;
-          this.close();
-          console.error(e);
-        }
-      }
-    },
-
-    uppercase() {
-      this.editedItem.bloodtype = this.editedItem.bloodtype.toUpperCase();
-    },
-
-    async exportBlood() {
+    async exportNewbie() {
       this.loading = true;
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
         if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-          const data = this.bloodstorage;
+          const data = this.newbies;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
 
@@ -390,13 +297,13 @@ export default {
         this.loading = true;
         try {
           // if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-          const data = this.bloodstorage;
+          const data = this.newbies;
           await data.forEach(async item => {
             item.accumulation = 0
             item.total = 0
-            await this.updateBlood({
+            await this.updateNewbie({
               index: this.editedIndex,
-              blood: item,
+              newbie: item,
             });
           })
 
@@ -425,7 +332,7 @@ export default {
       if (data) {
         try {
           data.forEach(async e => {
-            await this.addBlood(e);
+            await this.addNewbie(e);
           })
         } catch (e) {
           this.loading = false;

@@ -7,6 +7,7 @@ import bloodstorage from "./modules/hien-mau";
 import expenses from "./modules/sao-ke-khoan-chi";
 import allstatus from "./modules/status";
 import policeStation from "./modules/ho-so-canh-sat";
+import newbies from "./modules/cu-dan-moi";
 
 Vue.use(Vuex);
 
@@ -19,5 +20,6 @@ export default new Vuex.Store({
     expenses,
     allstatus,
     policeStation,
+    newbies,
   },
 });

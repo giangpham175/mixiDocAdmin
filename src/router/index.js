@@ -10,6 +10,7 @@ import Sounds from "../views/admin/Sounds";
 import HienMau from "../views/admin/hien-mau";
 import SaoKeKhoanChi from "../views/admin/sao-ke-khoan-chi";
 import SaoKeCanhSat from "../views/admin/sao-ke-canh-sat";
+import CuDanMoi from "../views/admin/cu-dan-moi";
 
 Vue.use(VueRouter);
 
@@ -29,6 +30,7 @@ const routes = [
       { path: "hien-mau", component: HienMau },
       { path: "khoan-chi", component: SaoKeKhoanChi },
       { path: "canh-sat", component: SaoKeCanhSat },
+      { path: "cu-dan-moi", component: CuDanMoi },
     ],
     meta: {
       requiresAuth: true,
