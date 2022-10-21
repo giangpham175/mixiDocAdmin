@@ -175,8 +175,8 @@ export default {
 
   created() {
     this.initialize();
-    this.editedItem.name = this.user.data.email
-    this.defaultItem.name = this.user.data.email
+    this.editedItem.name = this.user.data.displayName
+    this.defaultItem.name = this.user.data.displayName
   },
 
   methods: {
@@ -185,7 +185,7 @@ export default {
       updateExpense: "expenses/updateExpense",
       removeExpense: "expenses/removeExpense",
       updateStatus: "allstatus/updateStatus",
-      loadSaoKeStatus: "allstatus/loadSaoKeStatus",
+      loadSaoKeKhoanChiStatus: "allstatus/loadSaoKeKhoanChiStatus",
     }),
 
     async initialize() {
@@ -193,7 +193,7 @@ export default {
       try {
         await this.loadExpenses;
         await this.loadAllStatus;
-        const status = await this.loadSaoKeStatus();
+        const status = await this.loadSaoKeKhoanChiStatus();
         const statusDetail = status.data()
         this.actived = statusDetail.actived
       } catch (e) {
@@ -210,7 +210,7 @@ export default {
 
     async deleteItem(item) {
       this.loading = true;
-      if (this.user.data.email === item.name && confirm("Chắc chắn là XÓA nha?")) {
+      if (this.user.data.displayName === item.name && confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
           // if (this.user.data.email === item.name) {
@@ -247,7 +247,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      const status = await this.loadSaoKeStatus();
+      const status = await this.loadSaoKeKhoanChiStatus();
       const statusDetail = status.data()
       if (statusDetail.actived) {
         if (this.editedIndex > -1) {

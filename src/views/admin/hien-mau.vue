@@ -41,6 +41,10 @@
                         <v-text-field disabled v-model="editedItem.lasttime" label="Thời gian hiến máu lần cuối">
                         </v-text-field>
                       </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field disabled v-model="editedItem.actionBy" label="Ghi nhận bởi">
+                        </v-text-field>
+                      </v-col>
                       <v-col cols="12" sm="12" md="6">
                         <v-btn block color="warning" dark class="mb-2" @click="subtract">Đổi
                           điểm (-2)</v-btn>
@@ -158,6 +162,7 @@ export default {
         accumulation: 0,
         total: 0,
         lasttime: "",
+        actionBy: "",
         // bloodtype: "",
       },
       defaultItem: {
@@ -165,6 +170,7 @@ export default {
         accumulation: 0,
         total: 0,
         lasttime: "",
+        actionBy: "",
         // bloodtype: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
@@ -314,6 +320,8 @@ export default {
         const current = new Date()
         this.editedItem.lasttime = current.toLocaleString()
         this.defaultItem.lasttime = current.toLocaleString()
+        this.editedItem.actionBy = this.user.data.displayName
+        this.defaultItem.actionBy = this.user.data.displayName
         if (this.editedItem.accumulation === 0) {
           this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
           this.editedItem.total = Number(this.editedItem.total) + 1

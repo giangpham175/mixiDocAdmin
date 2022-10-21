@@ -40,10 +40,17 @@ const allstatus = {
         .set(payload.status);
       commit("UPDATE_STATUS", payload);
     },
-    async loadSaoKeStatus() {
+    async loadSaoKeKhoanChiStatus() {
       const doc = await firestore()
         .collection(collName)
         .doc("lR2PH2qeKEBwRXtAjA8L")
+        .get();
+      return doc;
+    },
+    async loadSaoKeCanhSatStatus() {
+      const doc = await firestore()
+        .collection(collName)
+        .doc("3LyZBzWwIsmLPGVGCQIu")
         .get();
       return doc;
     },

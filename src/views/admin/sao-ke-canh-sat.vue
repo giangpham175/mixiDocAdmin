@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="expenses" :search="search" class="elevation-1" :loading="loading"
+    <v-data-table :headers="headers" :items="policeStation" :search="search" class="elevation-1" :loading="loading"
       loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Sao Kê Khoản Chi</v-toolbar-title>
+          <v-toolbar-title>Hồ Sơ Bệnh Án Cảnh Sát</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
 
@@ -23,16 +23,20 @@
                   <v-form v-bind:disabled="loading" lazy-validation ref="dialogForm">
                     <v-row>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Người Chi">
+                        <v-text-field disabled v-model="editedItem.name" label="Người Ghi Nhận">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field :rules="fieldRule" v-model="editedItem.policeName" label="Đồng Chí">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.reason"
-                          label="Nội Dung Chi"></v-text-field>
+                          label="Nội Dung"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.amount"
-                          label="Số Tiền Chi" type="number">
+                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.amount" label="Số Tiền"
+                          type="number">
                         </v-text-field>
                       </v-col>
                     </v-row>
@@ -57,7 +61,7 @@
           <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="exportExpenses" color="#2E7D32">
+          <v-btn text icon class="mb-2 ml-2" @click="exportPoliceStation" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>
@@ -114,23 +118,29 @@ export default {
       dialog: false,
       headers: [
         {
-          text: "Người Chi",
+          text: "Người Ghi Nhận",
           align: "start",
           sortable: true,
           value: "name",
         },
         {
-          text: "Thời Gian",
+          text: "Đồng Chí",
+          align: "start",
           sortable: true,
-          value: "time",
+          value: "policeName",
         },
+        // {
+        //   text: "Thời Gian",
+        //   sortable: true,  
+        //   value: "time",
+        // },
         {
-          text: "Nội Dung Chi",
+          text: "Nội Dung",
           sortable: true,
           value: "reason",
         },
         {
-          text: "Số Tiền Chi",
+          text: "Số Tiền",
           sortable: true,
           value: "amount",
         },
@@ -139,12 +149,14 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
+        policeName: "",
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
       },
       defaultItem: {
         name: "",
+        policeName: "",
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
@@ -154,11 +166,11 @@ export default {
   },
   computed: {
     ...mapActions({
-      loadExpenses: "expenses/loadExpenses",
+      loadPoliceStation: "policeStation/loadPoliceStation",
       loadAllStatus: "allstatus/loadAllStatus",
     }),
     ...mapGetters({
-      expenses: "expenses/getExpenses",
+      policeStation: "policeStation/getPoliceStation",
       allstatus: "allstatus/getAllStatus",
       user: "auth/user",
     }),
@@ -175,25 +187,25 @@ export default {
 
   created() {
     this.initialize();
-    this.editedItem.name = this.user.data.email
-    this.defaultItem.name = this.user.data.email
+    this.editedItem.name = this.user.data.displayName
+    this.defaultItem.name = this.user.data.displayName
   },
 
   methods: {
     ...mapActions({
-      addExpense: "expenses/addExpense",
-      updateExpense: "expenses/updateExpense",
-      removeExpense: "expenses/removeExpense",
+      addPolice: "policeStation/addPolice",
+      updatePolice: "policeStation/updatePolice",
+      removePolice: "policeStation/removePolice",
       updateStatus: "allstatus/updateStatus",
-      loadSaoKeStatus: "allstatus/loadSaoKeStatus",
+      loadSaoKeCanhSatStatus: "allstatus/loadSaoKeCanhSatStatus",
     }),
 
     async initialize() {
       this.loading = true;
       try {
-        await this.loadExpenses;
+        await this.loadPoliceStation;
         await this.loadAllStatus;
-        const status = await this.loadSaoKeStatus();
+        const status = await this.loadSaoKeCanhSatStatus();
         const statusDetail = status.data()
         this.actived = statusDetail.actived
       } catch (e) {
@@ -203,18 +215,18 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.expenses.indexOf(item);
+      this.editedIndex = this.policeStation.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     async deleteItem(item) {
       this.loading = true;
-      if (this.user.data.email === item.name && confirm("Chắc chắn là XÓA nha?")) {
+      if (this.user.data.displayName === item.name && confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
           // if (this.user.data.email === item.name) {
-          await this.removeExpense(item);
+          await this.removePolice(item);
           this.loading = false;
 
           this.snack = true;
@@ -247,7 +259,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      const status = await this.loadSaoKeStatus();
+      const status = await this.loadSaoKeCanhSatStatus();
       const statusDetail = status.data()
       if (statusDetail.actived) {
         if (this.editedIndex > -1) {
@@ -256,9 +268,9 @@ export default {
           this.defaultItem.time = current.toLocaleString()
           this.loading = true;
           try {
-            await this.updateExpense({
+            await this.updatePolice({
               index: this.editedIndex,
-              expense: this.editedItem,
+              police: this.editedItem,
             });
             this.loading = false;
             this.close();
@@ -283,7 +295,7 @@ export default {
           this.editedItem.time = current.toLocaleString()
           this.defaultItem.time = current.toLocaleString()
           try {
-            await this.addExpense(this.editedItem);
+            await this.addPolice(this.editedItem);
             this.loading = false;
             this.close();
 
@@ -308,7 +320,7 @@ export default {
       }
     },
 
-    async exportExpenses() {
+    async exportPoliceStation() {
       this.loading = true;
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
@@ -316,7 +328,7 @@ export default {
         if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
           const allStatus = await this.allstatus;
           await allStatus.forEach(async e => {
-            if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === true) {
+            if (e.id === "3LyZBzWwIsmLPGVGCQIu" && e.actived === true) {
               e.actived = false
               this.actived = false
               await this.updateStatus({
@@ -326,8 +338,8 @@ export default {
             }
           })
 
-          const data = this.expenses;
-          const fileName = "sao-ke-khoan-chi-" + currentDay + "-" + currentMonth;
+          const data = this.policeStation;
+          const fileName = "sao-ke-canh-sat-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
@@ -355,7 +367,7 @@ export default {
       if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
         const data = await this.allstatus;
         await data.forEach(async e => {
-          if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
+          if (e.id === "3LyZBzWwIsmLPGVGCQIu" && e.actived === false) {
             e.actived = true
             this.actived = true
             await this.updateStatus({
@@ -373,9 +385,9 @@ export default {
       if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
-          const data = this.expenses;
+          const data = this.policeStation;
           await data.forEach(async item => {
-            await this.removeExpense(item)
+            await this.removePolice(item)
           })
           this.snack = true;
           this.snackColor = "success";
