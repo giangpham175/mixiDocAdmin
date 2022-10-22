@@ -251,9 +251,13 @@ export default {
       const statusDetail = status.data()
       if (statusDetail.actived) {
         if (this.editedIndex > -1) {
-          const current = new Date()
-          this.editedItem.time = current.toLocaleString()
-          this.defaultItem.time = current.toLocaleString()
+          // const current = new Date()
+          const nowTimeAtDoctorPlace = this.changeTimezone(
+            new Date(),
+            -420,
+          )
+          this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
+          this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
           this.loading = true;
           try {
             await this.updateExpense({
@@ -279,9 +283,13 @@ export default {
         } else {
           // this.editedItem.total = 1
           this.loading = true;
-          const current = new Date()
-          this.editedItem.time = current.toLocaleString()
-          this.defaultItem.time = current.toLocaleString()
+          // const current = new Date()
+          const nowTimeAtDoctorPlace = this.changeTimezone(
+            new Date(),
+            -420,
+          )
+          this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
+          this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
           try {
             await this.addExpense(this.editedItem);
             this.loading = false;
@@ -341,9 +349,14 @@ export default {
     async refreshTime() {
       this.loading = true;
       try {
-        const current = new Date()
-        this.editedItem.time = current.toLocaleString()
-        this.defaultItem.time = current.toLocaleString()
+        // const current = new Date()
+        const nowTimeAtDoctorPlace = this.changeTimezone(
+          new Date(),
+          -420,
+        )
+
+        this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
+        this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
       } catch (e) {
         console.error(e);
       }
@@ -393,6 +406,10 @@ export default {
       } else {
         this.loading = false;
       }
+    },
+
+    changeTimezone(date, timezone) {
+      return new Date(date.getTime() - timezone * 60 * 1000)
     }
   },
 

@@ -311,9 +311,15 @@ export default {
       if (this.editedIndex > -1) {
         this.loading = true;
 
-        const current = new Date()
-        this.editedItem.lasttime = current.toLocaleString()
-        this.defaultItem.lasttime = current.toLocaleString()
+        // const current = new Date()
+        const nowTimeAtDoctorPlace = this.changeTimezone(
+          new Date(),
+          -420,
+        )
+
+        this.editedItem.lasttime = nowTimeAtDoctorPlace.toLocaleString()
+        this.defaultItem.lasttime = nowTimeAtDoctorPlace.toLocaleString()
+
         this.editedItem.actionBy = this.user.data.displayName
         this.defaultItem.actionBy = this.user.data.displayName
         if (this.editedItem.accumulation === 0) {
@@ -435,6 +441,10 @@ export default {
         console.log('import error')
       }
     },
+
+    changeTimezone(date, timezone) {
+      return new Date(date.getTime() - timezone * 60 * 1000)
+    }
   },
 
   filters: {
