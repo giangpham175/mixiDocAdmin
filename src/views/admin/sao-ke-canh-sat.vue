@@ -264,10 +264,16 @@ export default {
       if (statusDetail.actived) {
         if (this.editedIndex > -1) {
           // const current = new Date()
-          const nowTimeAtDoctorPlace = this.changeTimezone(
-            new Date(),
-            -420,
-          )
+          const date = new Date();
+
+          const hour = date.getUTCHours();
+          const min = date.getUTCMinutes();
+          const sec = date.getUTCSeconds();
+          const year = date.getUTCFullYear();
+          const month = date.getUTCMonth();
+          const day = date.getUTCDate();
+          const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
+
           this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
           this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
           this.loading = true;
@@ -296,10 +302,16 @@ export default {
           // this.editedItem.total = 1
           this.loading = true;
           // const current = new Date()
-          const nowTimeAtDoctorPlace = this.changeTimezone(
-            new Date(),
-            -420,
-          )
+          const date = new Date();
+
+          const hour = date.getUTCHours();
+          const min = date.getUTCMinutes();
+          const sec = date.getUTCSeconds();
+          const year = date.getUTCFullYear();
+          const month = date.getUTCMonth();
+          const day = date.getUTCDate();
+          const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
+
           this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
           this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
           try {

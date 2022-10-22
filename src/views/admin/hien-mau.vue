@@ -312,11 +312,17 @@ export default {
         this.loading = true;
 
         // const current = new Date()
-        const nowTimeAtDoctorPlace = this.changeTimezone(
-          new Date(),
-          -420,
-        )
+        const date = new Date();
 
+        const hour = date.getUTCHours();
+        const min = date.getUTCMinutes();
+        const sec = date.getUTCSeconds();
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth();
+        const day = date.getUTCDate();
+        const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
+
+        // this.editedItem.lasttime = date.toLocaleString()
         this.editedItem.lasttime = nowTimeAtDoctorPlace.toLocaleString()
         this.defaultItem.lasttime = nowTimeAtDoctorPlace.toLocaleString()
 
