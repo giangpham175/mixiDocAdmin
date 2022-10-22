@@ -4,7 +4,7 @@
       loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Cư Dân Mới</v-toolbar-title>
+          <v-toolbar-title>chưa hoàn thiện</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
 
@@ -47,7 +47,7 @@
           </v-dialog>
 
           <v-btn text icon class="mb-2 ml-2" @click="resetPoint" color="error">
-            <v-icon>mdi-file-restore-outline</v-icon>
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
           <v-btn text icon class="mb-2 ml-2" @click="exportNewbie" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
@@ -279,7 +279,7 @@ export default {
       try {
         if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
           const data = this.newbies;
-          const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
+          const fileName = "cu-dan-moi-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
