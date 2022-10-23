@@ -254,12 +254,13 @@ export default {
           // const current = new Date()
           const date = new Date();
 
-          const hour = date.getUTCHours();
-          const min = date.getUTCMinutes();
-          const sec = date.getUTCSeconds();
-          const year = date.getUTCFullYear();
-          const month = date.getUTCMonth();
-          const day = date.getUTCDate();
+          let hour = date.getUTCHours();
+          let min = date.getUTCMinutes();
+          let sec = date.getUTCSeconds();
+          let year = date.getUTCFullYear();
+          let month = date.getUTCMonth();
+          let day = date.getUTCDate();
+
           const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
 
           this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()

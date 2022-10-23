@@ -4,7 +4,7 @@
       loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>chưa hoàn thiện</v-toolbar-title>
+          <v-toolbar-title>Cư Dân Mới</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
 
@@ -25,12 +25,20 @@
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.gender" label="Giới Tính">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.dob" label="Năm Sinh" type="number">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field disabled v-model="editedItem.timeSupported" label="Thời gian hỗ trợ">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field disabled v-model="editedItem.doctorSupported" label="Bác sĩ hỗ trợ">
                         </v-text-field>
                       </v-col>
                     </v-row>
@@ -46,7 +54,7 @@
             </v-card>
           </v-dialog>
 
-          <v-btn text icon class="mb-2 ml-2" @click="resetPoint" color="error">
+          <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
           <v-btn text icon class="mb-2 ml-2" @click="exportNewbie" color="#2E7D32">
@@ -72,7 +80,7 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
+        <v-icon medium class="mr-2" @click="tickSupported(item)" color="warning">
           mdi-sticker-check
         </v-icon>
         <!-- <v-icon small @click="deleteItem(item)" color="error">
@@ -124,6 +132,16 @@ export default {
           sortable: true,
           value: "dob",
         },
+        {
+          text: "Thời gian hỗ trợ",
+          sortable: true,
+          value: "timeSupported",
+        },
+        {
+          text: "Bác sĩ hỗ trợ",
+          sortable: true,
+          value: "doctorSupported",
+        },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
       editedIndex: -1,
@@ -131,13 +149,15 @@ export default {
         name: "",
         gender: "",
         dob: "",
-        checked: false
+        timeSupported: "",
+        doctorSupported: "",
       },
       defaultItem: {
         name: "",
         gender: "",
         dob: "",
-        checked: false
+        timeSupported: "",
+        doctorSupported: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
@@ -214,6 +234,36 @@ export default {
       }
     },
 
+    async deleteAll() {
+      this.loading = true;
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+        this.loading = true;
+        try {
+          const data = this.expenses;
+          await data.forEach(async item => {
+            await this.removeNewbie(item)
+          })
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Xóa thông tin thành công";
+          this.loading = false;
+        } catch (e) {
+          this.loading = false;
+
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Xóa thông tin không thành công";
+
+          console.error(e);
+        }
+      } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Bạn không có quyền xóa";
+        this.loading = false;
+      }
+    },
+
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -225,50 +275,58 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.editedIndex > -1) {
-        this.loading = true;
-        try {
-          await this.updateNewbie({
-            index: this.editedIndex,
-            newbie: this.editedItem,
-          });
-          this.loading = false;
-          this.close();
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Lưu thông tin thành công";
-        } catch (e) {
-          this.loading = false;
-          this.close();
+        if (this.editedIndex > -1) {
+          this.loading = true;
+          try {
+            await this.updateNewbie({
+              index: this.editedIndex,
+              newbie: this.editedItem,
+            });
+            this.loading = false;
+            this.close();
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Lưu thông tin không thành công";
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Lưu thông tin thành công";
+          } catch (e) {
+            this.loading = false;
+            this.close();
 
-          console.error(e);
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Lưu thông tin không thành công";
+
+            console.error(e);
+          }
+        } else {
+          // this.editedItem.total = 1
+          this.loading = true;
+          try {
+            await this.addNewbie(this.editedItem);
+            this.loading = false;
+            this.close();
+
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Thêm thông tin thành công";
+          } catch (e) {
+            this.loading = false;
+            this.close();
+
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Thêm thông tin không thành công";
+
+            console.error(e);
+          }
         }
       } else {
-        // this.editedItem.total = 1
-        this.loading = true;
-        try {
-          await this.addNewbie(this.editedItem);
-          this.loading = false;
-          this.close();
-
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Thêm thông tin thành công";
-        } catch (e) {
-          this.loading = false;
-          this.close();
-
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Thêm thông tin không thành công";
-
-          console.error(e);
+        if (confirm("Bạn không có quyền thêm người mới")) {
+          location.reload();
         }
+        this.loading = false;
       }
     },
 
@@ -283,6 +341,10 @@ export default {
           const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
+        } else {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Bạn không có quyền xuất file";
         }
       } catch (e) {
         console.error(e);
@@ -290,26 +352,33 @@ export default {
       this.loading = false;
     },
 
-    // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
-    async resetPoint() {
+    async tickSupported(item) {
+
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là RESET HẾT đó nha?")) {
-        this.loading = true;
+      this.editedIndex = this.newbies.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+
+      if (!this.editedItem.doctorSupported) {
+        this.editedItem.doctorSupported = this.user.data.displayName
+        const date = new Date();
+        const hour = date.getUTCHours();
+        const min = date.getUTCMinutes();
+        const sec = date.getUTCSeconds();
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth();
+        const day = date.getUTCDate();
+        const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
+        this.editedItem.timeSupported = nowTimeAtDoctorPlace.toLocaleString()
+
         try {
-          // if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-          const data = this.newbies;
-          await data.forEach(async item => {
-            item.accumulation = 0
-            item.total = 0
-            await this.updateNewbie({
-              index: this.editedIndex,
-              newbie: item,
-            });
-          })
+          await this.updateNewbie({
+            index: this.editedIndex,
+            newbie: this.editedItem,
+          });
 
           this.snack = true;
           this.snackColor = "success";
-          this.snackText = "Reset điểm tích lũy thành công";
+          this.snackText = "Hỗ trợ cư dân mới thành công";
           this.loading = false;
           // }
         } catch (e) {
@@ -317,12 +386,14 @@ export default {
 
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = "Reset điểm tích lũy không thành công";
+          this.snackText = "Hỗ trợ cư dân mới không thành công";
 
           console.error(e);
         }
       } else {
-        this.loading = false;
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Cư dân đã được hỗ trợ";
       }
       this.loading = false;
     },
