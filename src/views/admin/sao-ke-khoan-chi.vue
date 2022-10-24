@@ -31,7 +31,7 @@
                           label="Nội Dung Chi"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.amount"
+                        <v-text-field :disabled="loading" v-model="editedItem.amount"
                           label="Số Tiền Chi" type="number">
                         </v-text-field>
                       </v-col>
