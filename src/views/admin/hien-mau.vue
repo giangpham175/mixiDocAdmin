@@ -52,6 +52,15 @@
                       <v-col cols="12" sm="12" md="6">
                         <v-btn block color="primary" dark class="mb-2" @click="plus">Tích điểm (+1)</v-btn>
                       </v-col>
+                      <v-col cols="12" sm="12" md="12" v-if="pointDeducted!==0">
+                        <span class="red--text">Đã trừ <b>{{pointDeducted}}</b> điểm</span>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="6" v-if="actionTotal">
+                        <v-btn block color="warning" dark class="mb-2" @click="plusTotal">Trừ Tổng (-1)</v-btn>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="6" v-if="actionTotal">
+                        <v-btn block color="primary" dark class="mb-2" @click="subtractTotal">Cộng Tổng (+1)</v-btn>
+                      </v-col>
                     </v-row>
                   </v-form>
                 </v-container>
@@ -120,6 +129,7 @@ import exportFromJSON from "export-from-json";
 export default {
   data() {
     return {
+      actionTotal: false,
       pointDeducted: 0,
       snack: false,
       snackColor: "",
@@ -213,10 +223,15 @@ export default {
       } catch (e) {
         console.error(e);
       }
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+        this.actionTotal = true
+      }
       this.loading = false;
     },
 
     editItem(item) {
+      this.pointDeducted = 0
+
       this.editedIndex = this.bloodstorage.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
@@ -364,6 +379,7 @@ export default {
             index: this.editedIndex,
             blood: this.editedItem,
           });
+          this.pointDeducted = this.pointDeducted + 2
           this.loading = false;
 
         } catch (e) {
@@ -372,6 +388,14 @@ export default {
           console.error(e);
         }
       }
+    },
+
+    async plusTotal() {
+      return
+    },
+
+    async subtractTotal() {
+      return
     },
 
     uppercase() {
