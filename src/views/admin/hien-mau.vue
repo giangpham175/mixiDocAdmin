@@ -120,6 +120,7 @@ import exportFromJSON from "export-from-json";
 export default {
   data() {
     return {
+      pointDeducted: 0,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -388,6 +389,11 @@ export default {
           const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
+        } else {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Bạn không có quyền xuất file";
+          this.loading = false;
         }
       } catch (e) {
         console.error(e);
@@ -398,35 +404,40 @@ export default {
     // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
     async resetPoint() {
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là RESET HẾT đó nha?")) {
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
         this.loading = true;
-        try {
-          // if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-          const data = this.bloodstorage;
-          await data.forEach(async item => {
-            item.accumulation = 0
-            item.total = 0
-            await this.updateBlood({
-              index: this.editedIndex,
-              blood: item,
-            });
-          })
+        if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
+          try {
+            // if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+            const data = this.bloodstorage;
+            await data.forEach(async item => {
+              item.accumulation = 0
+              item.total = 0
+              await this.updateBlood({
+                index: this.editedIndex,
+                blood: item,
+              });
+            })
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Reset điểm tích lũy thành công";
-          this.loading = false;
-          // }
-        } catch (e) {
-          this.loading = false;
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Reset điểm tích lũy thành công";
+            this.loading = false;
+            // }
+          } catch (e) {
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Reset điểm tích lũy không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Reset điểm tích lũy không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
         }
       } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Bạn không có đủ thẩm quyền";
         this.loading = false;
       }
       this.loading = false;
