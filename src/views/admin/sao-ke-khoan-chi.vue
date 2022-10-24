@@ -210,28 +210,35 @@ export default {
 
     async deleteItem(item) {
       this.loading = true;
-      if (this.user.data.displayName === item.name && confirm("Chắc chắn là XÓA nha?")) {
-        this.loading = true;
-        try {
-          // if (this.user.data.email === item.name) {
-          await this.removeExpense(item);
-          this.loading = false;
+      if (this.user.data.displayName === item.name) {
+        if (confirm("Chắc chắn là XÓA nha?")) {
+          this.loading = true;
+          try {
+            // if (this.user.data.email === item.name) {
+            await this.removeExpense(item);
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Xóa thông tin thành công";
-          // }
-          this.loading = false;
-        } catch (e) {
-          this.loading = false;
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Xóa thông tin thành công";
+            // }
+            this.loading = false;
+          } catch (e) {
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Xóa thông tin không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Xóa thông tin không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
+        } else {
+          this.loading = false;
         }
       } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Bạn không có quyền xóa";
         this.loading = false;
       }
     },
@@ -352,6 +359,11 @@ export default {
           const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
+        } else {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Bạn không có quyền xuất file";
+          this.loading = false;
         }
       } catch (e) {
         console.error(e);
@@ -395,6 +407,11 @@ export default {
             });
           }
         })
+      } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Bạn không có quyền mở khóa";
+        this.loading = false;
       }
       this.loading = false;
     },
@@ -422,6 +439,9 @@ export default {
           console.error(e);
         }
       } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Bạn không có quyền xóa";
         this.loading = false;
       }
     },

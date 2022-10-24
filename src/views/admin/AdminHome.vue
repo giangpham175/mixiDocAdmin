@@ -63,7 +63,7 @@ export default {
       // { path: '/categories', title: 'Categories', icon: 'mdi-folder-multiple' },
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
-      { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
+      // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
       { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-crowd' },
     ]
   }),
