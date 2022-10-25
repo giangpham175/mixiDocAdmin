@@ -108,7 +108,8 @@
         </v-icon> -->
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <!-- <v-btn color="primary" @click="initialize">Reset</v-btn> -->
+        <v-btn color="primary" @click="addOldData">Add new data</v-btn>
       </template>
     </v-data-table>
 
