@@ -56,10 +56,10 @@
                         <span class="red--text">Đã trừ <b>{{ pointDeducted }}</b> điểm</span>
                       </v-col>
                       <v-col cols="12" sm="12" md="6" v-if="actionTotal">
-                        <v-btn block color="warning" dark class="mb-2" @click="plusTotal">Trừ Tổng (-1)</v-btn>
+                        <v-btn block color="warning" dark class="mb-2" @click="subtractTotal">Trừ Tổng (-1)</v-btn>
                       </v-col>
                       <v-col cols="12" sm="12" md="6" v-if="actionTotal">
-                        <v-btn block color="primary" dark class="mb-2" @click="subtractTotal">Cộng Tổng (+1)</v-btn>
+                        <v-btn block color="primary" dark class="mb-2" @click="plusTotal">Cộng Tổng (+1)</v-btn>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -396,11 +396,48 @@ export default {
     },
 
     async plusTotal() {
-      return
+      if (!this.$refs.dialogForm.validate()) return;
+
+      if (this.editedIndex > -1) {
+        this.loading = true;
+        this.editedItem.total = Number(this.editedItem.total) + 1
+
+        try {
+          await this.updateBlood({
+            index: this.editedIndex,
+            blood: this.editedItem,
+          });
+          this.loading = false;
+
+        } catch (e) {
+          this.loading = false;
+          this.close();
+          console.error(e);
+        }
+      }
     },
 
     async subtractTotal() {
-      return
+      if (!this.$refs.dialogForm.validate()) return;
+
+      if (this.editedIndex > -1) {
+        if (this.editedItem.total > 0) {
+          this.editedItem.total = Number(this.editedItem.total) - 1
+        }
+
+        try {
+          await this.updateBlood({
+            index: this.editedIndex,
+            blood: this.editedItem,
+          });
+          this.loading = false;
+
+        } catch (e) {
+          this.loading = false;
+          this.close();
+          console.error(e);
+        }
+      }
     },
 
     uppercase() {
