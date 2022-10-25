@@ -370,25 +370,26 @@ export default {
         const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
         this.editedItem.timeSupported = nowTimeAtDoctorPlace.toLocaleString()
 
-        try {
-          await this.updateNewbie({
-            index: this.editedIndex,
-            newbie: this.editedItem,
-          });
+        if (confirm(`Hỗ trợ cho cư dân ${this.editedItem.name} ?`)) {
+          try {
+            await this.updateNewbie({
+              index: this.editedIndex,
+              newbie: this.editedItem,
+            });
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Hỗ trợ cư dân mới thành công";
-          this.loading = false;
-          // }
-        } catch (e) {
-          this.loading = false;
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Hỗ trợ cư dân mới thành công";
+            this.loading = false;
+          } catch (e) {
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Hỗ trợ cư dân mới không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Hỗ trợ cư dân mới không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
         }
       } else {
         this.snack = true;
