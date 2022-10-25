@@ -26,13 +26,20 @@
                         <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Người Chi">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.reason"
-                          label="Nội Dung Chi"></v-text-field>
+
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field autofocus :disabled="loading" v-model="editedItem.cake" label="Bánh"
+                          type="number">
+                        </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field :disabled="loading" v-model="editedItem.amount"
-                          label="Số Tiền Chi" type="number">
+
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" v-model="editedItem.water" label="Nước" type="number">
+                        </v-text-field>
+                      </v-col>
+
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" v-model="editedItem.socola" label="Socola" type="number">
                         </v-text-field>
                       </v-col>
                     </v-row>
@@ -139,12 +146,18 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
+        cake: 0,
+        water: 0,
+        socola: 0,
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
       },
       defaultItem: {
         name: "",
+        cake: 0,
+        water: 0,
+        socola: 0,
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
@@ -251,6 +264,22 @@ export default {
       });
     },
 
+    async changeTimeZone(date, timeZone) {
+      if (typeof date === 'string') {
+        return new Date(
+          new Date(date).toLocaleString('en-US', {
+            timeZone,
+          }),
+        );
+      }
+
+      return new Date(
+        date.toLocaleString('en-US', {
+          timeZone,
+        }),
+      );
+    },
+
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
@@ -258,20 +287,12 @@ export default {
       const statusDetail = status.data()
       if (statusDetail.actived) {
         if (this.editedIndex > -1) {
-          // const current = new Date()
-          const date = new Date();
+          const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
-          let hour = date.getUTCHours();
-          let min = date.getUTCMinutes();
-          let sec = date.getUTCSeconds();
-          let year = date.getUTCFullYear();
-          let month = date.getUTCMonth();
-          let day = date.getUTCDate();
-
-          const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
-
-          this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
-          this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
+          this.editedItem.time = nowTime.toLocaleString()
+          this.defaultItem.time = nowTime.toLocaleString()
+          this.editedItem.reason = `${this.editedItem.cake} Bánh + ${this.editedItem.water} Nước + ${this.editedItem.socola} Socola`
+          this.editedItem.amount = this.editedItem.cake * 50 + this.editedItem.water * 50 + this.editedItem.socola * 200
           this.loading = true;
           try {
             await this.updateExpense({
@@ -297,19 +318,13 @@ export default {
         } else {
           // this.editedItem.total = 1
           this.loading = true;
-          // const current = new Date()
-          const date = new Date();
+          const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
-          const hour = date.getUTCHours();
-          const min = date.getUTCMinutes();
-          const sec = date.getUTCSeconds();
-          const year = date.getUTCFullYear();
-          const month = date.getUTCMonth();
-          const day = date.getUTCDate();
-          const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
-
-          this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
-          this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
+          this.editedItem.time = nowTime.toLocaleString()
+          this.defaultItem.time = nowTime.toLocaleString()
+          this.editedItem.reason = `${this.editedItem.cake} Bánh + ${this.editedItem.water} Nước + ${this.editedItem.socola} Socola`
+          this.editedItem.amount = this.editedItem.cake * 50 + this.editedItem.water * 50 + this.editedItem.socola * 200
+          this.loading = true;
           try {
             await this.addExpense(this.editedItem);
             this.loading = false;
@@ -374,19 +389,10 @@ export default {
     async refreshTime() {
       this.loading = true;
       try {
-        // const current = new Date()
-        const date = new Date();
+        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
-        const hour = date.getUTCHours();
-        const min = date.getUTCMinutes();
-        const sec = date.getUTCSeconds();
-        const year = date.getUTCFullYear();
-        const month = date.getUTCMonth();
-        const day = date.getUTCDate();
-        const nowTimeAtDoctorPlace = `${hour}:${min}:${sec}, ${day}/${month}/${year}`
-
-        this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
-        this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
+        this.editedItem.time = nowTime.toLocaleString()
+        this.defaultItem.time = nowTime.toLocaleString()
       } catch (e) {
         console.error(e);
       }
