@@ -52,8 +52,8 @@
                       <v-col cols="12" sm="12" md="6">
                         <v-btn block color="primary" dark class="mb-2" @click="plus">Tích điểm (+1)</v-btn>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12" v-if="pointDeducted!==0">
-                        <span class="red--text">Đã trừ <b>{{pointDeducted}}</b> điểm</span>
+                      <v-col cols="12" sm="12" md="12" v-if="pointDeducted !== 0">
+                        <span class="red--text">Đã trừ <b>{{ pointDeducted }}</b> điểm</span>
                       </v-col>
                       <v-col cols="12" sm="12" md="6" v-if="actionTotal">
                         <v-btn block color="warning" dark class="mb-2" @click="plusTotal">Trừ Tổng (-1)</v-btn>
@@ -321,26 +321,31 @@ export default {
       }
     },
 
+    async changeTimeZone(date, timeZone) {
+      if (typeof date === 'string') {
+        return new Date(
+          new Date(date).toLocaleString('en-US', {
+            timeZone,
+          }),
+        );
+      }
+
+      return new Date(
+        date.toLocaleString('en-US', {
+          timeZone,
+        }),
+      );
+    },
+
     async plus() {
       if (!this.$refs.dialogForm.validate()) return;
 
       if (this.editedIndex > -1) {
         this.loading = true;
 
-        // const current = new Date()
-        const date = new Date();
-
-        const hour = date.getUTCHours();
-        const min = date.getUTCMinutes();
-        const sec = date.getUTCSeconds();
-        const year = date.getUTCFullYear();
-        const month = date.getUTCMonth();
-        const day = date.getUTCDate();
-        const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
-
-        // this.editedItem.lasttime = date.toLocaleString()
-        this.editedItem.lasttime = nowTimeAtDoctorPlace.toLocaleString()
-        this.defaultItem.lasttime = nowTimeAtDoctorPlace.toLocaleString()
+        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+        this.editedItem.lasttime = nowTime.toLocaleString()
+        this.defaultItem.lasttime = nowTime.toLocaleString()
 
         this.editedItem.actionBy = this.user.data.displayName
         this.defaultItem.actionBy = this.user.data.displayName

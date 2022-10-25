@@ -275,7 +275,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+      if (this.user.data.email) {
 
         if (this.editedIndex > -1) {
           this.loading = true;
@@ -352,6 +352,22 @@ export default {
       this.loading = false;
     },
 
+    async changeTimeZone(date, timeZone) {
+      if (typeof date === 'string') {
+        return new Date(
+          new Date(date).toLocaleString('en-US', {
+            timeZone,
+          }),
+        );
+      }
+
+      return new Date(
+        date.toLocaleString('en-US', {
+          timeZone,
+        }),
+      );
+    },
+
     async tickSupported(item) {
 
       this.loading = true;
@@ -360,15 +376,18 @@ export default {
 
       if (!this.editedItem.doctorSupported) {
         this.editedItem.doctorSupported = this.user.data.displayName
-        const date = new Date();
-        const hour = date.getUTCHours();
-        const min = date.getUTCMinutes();
-        const sec = date.getUTCSeconds();
-        const year = date.getUTCFullYear();
-        const month = date.getUTCMonth();
-        const day = date.getUTCDate();
-        const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
-        this.editedItem.timeSupported = nowTimeAtDoctorPlace.toLocaleString()
+        // const date = new Date();
+        // const hour = date.getUTCHours();
+        // const min = date.getUTCMinutes();
+        // const sec = date.getUTCSeconds();
+        // const year = date.getUTCFullYear();
+        // const month = date.getUTCMonth();
+        // const day = date.getUTCDate();
+        // const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
+        // this.editedItem.timeSupported = nowTimeAtDoctorPlace.toLocaleString()
+
+        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+        this.editedItem.timeSupported = nowTime.toLocaleString()
 
         try {
           await this.updateNewbie({
