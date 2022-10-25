@@ -28,7 +28,8 @@
                       </v-col>
 
                       <v-col cols="4" sm="4" md="4">
-                        <v-text-field :disabled="loading" v-model="editedItem.cake" label="Bánh" type="number">
+                        <v-text-field autofocus :disabled="loading" v-model="editedItem.cake" label="Bánh"
+                          type="number">
                         </v-text-field>
                       </v-col>
 
