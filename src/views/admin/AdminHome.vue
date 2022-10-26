@@ -61,6 +61,7 @@ export default {
       // { path: '', title: 'Dashboard', icon: 'mdi-view-dashboard' },
       // { path: '/sounds', title: 'Sounds', icon: 'mdi-playlist-music'},
       // { path: '/categories', title: 'Categories', icon: 'mdi-folder-multiple' },
+      { path: '/mdt', title: 'MDT', icon: 'mdi-account-group' },
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
       // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },

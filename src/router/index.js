@@ -7,6 +7,7 @@ import Dashboard from "../views/admin/Dashboard";
 import Categories from "../views/admin/Categories";
 import Sounds from "../views/admin/Sounds";
 
+import MDT from "../views/admin/mdt";
 import HienMau from "../views/admin/hien-mau";
 import SaoKeKhoanChi from "../views/admin/sao-ke-khoan-chi";
 import SaoKeCanhSat from "../views/admin/sao-ke-canh-sat";
@@ -27,6 +28,7 @@ const routes = [
       { path: "", component: Dashboard },
       { path: "sounds", component: Sounds },
       { path: "categories", component: Categories },
+      { path: "mdt", component: MDT },
       { path: "hien-mau", component: HienMau },
       { path: "khoan-chi", component: SaoKeKhoanChi },
       { path: "canh-sat", component: SaoKeCanhSat },

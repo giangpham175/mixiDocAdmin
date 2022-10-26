@@ -1,0 +1,358 @@
+<template>
+  <div>
+    <v-data-table :headers="headers" :items="bloodstorage" :search="search" class="elevation-1" :loading="loading"
+      loading-text="Loading... Please wait">
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>MDT</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical />
+          <v-spacer />
+
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Đăng ký</v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-form v-bind:disabled="loading" lazy-validation ref="dialogForm">
+                    <v-row>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.bloodtype"
+                          label="Nhóm Máu" @keyup="uppercase" class="bloodtype"></v-text-field>
+                      </v-col>
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" v-model="editedItem.gender" label="Giới Tính">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="4" sm="4" md="4">
+                        <v-text-field :disabled="loading" v-model="editedItem.dob" label="Năm Sinh" type="number">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field :disabled="loading" v-model="editedItem.bhyt" label="Bảo Hiểm Y Tế">
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :disabled="loading" color="red darken-1" text @click="close">Hủy</v-btn>
+                <v-btn :disabled="loading" color="blue darken-1" text @click="save">Lưu</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-btn text icon class="mb-2 ml-2" @click="resetPoint" color="error">
+            <v-icon>mdi-file-restore-outline</v-icon>
+          </v-btn>
+          <v-btn text icon class="mb-2 ml-2" @click="exportBlood" color="#2E7D32">
+            <v-icon>mdi-microsoft-excel</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </template>
+
+      <template v-slot:[`item.image`]="{ value }">
+        <a :href="value" target="_blank">
+          {{ value | truncate(20, "...") }}
+          <span class="mdi mdi-open-in-new"></span>
+        </a>
+      </template>
+
+      <template v-slot:[`body.prepend`]="{ headers }">
+        <tr class="mx-0 px-0">
+          <td :colspan="headers.length" class="mx-0 px-0">
+            <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Search" single-line hide-details
+              filled class="px-0 mx-0" />
+          </td>
+        </tr>
+      </template>
+
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon medium class="mr-2" @click="editItem(item)" color="primary">
+          mdi-account-eye-outline
+        </v-icon>
+        <v-icon medium @click="editItem(item)" color="warning">
+          mdi-briefcase-plus-outline
+        </v-icon>
+      </template>
+      <template v-slot:no-data>
+        <!-- <v-btn color="primary" @click="initialize">Reset</v-btn> -->
+        <v-btn color="primary" @click="addOldData">Add new data</v-btn>
+      </template>
+    </v-data-table>
+
+    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+      {{ snackText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn v-bind="attrs" text @click="snack = false">Close</v-btn>
+      </template>
+    </v-snackbar>
+  </div>
+</template>
+
+<script>
+// import { storage } from "firebase";
+import { mapActions, mapGetters } from "vuex";
+import exportFromJSON from "export-from-json";
+
+export default {
+  data() {
+    return {
+      actionTotal: false,
+      pointDeducted: 0,
+      snack: false,
+      snackColor: "",
+      snackText: "",
+      search: "",
+      loading: true,
+      dialog: false,
+      headers: [
+        {
+          text: "Tên",
+          align: "start",
+          sortable: true,
+          value: "name",
+        },
+        {
+          text: "Năm sinh",
+          sortable: true,
+          value: "dob",
+        },
+        { text: "Thao tác", value: "actions", sortable: false },
+      ],
+      editedIndex: -1,
+      editedItem: {
+        name: "",
+        dob: "",
+        bloodtype: "",
+        bhyt: "",
+        gender: ""
+      },
+      defaultItem: {
+        name: "",
+        dob: "",
+        bloodtype: "",
+        bhyt: "",
+        gender: ""
+      },
+      fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
+    };
+  },
+  computed: {
+    ...mapActions({
+      loadBloodStorage: "bloodstorage/loadBloodStorage",
+    }),
+    ...mapGetters({
+      bloodstorage: "bloodstorage/getBloodStorage",
+      user: "auth/user",
+    }),
+    formTitle() {
+      return this.editedIndex === -1 ? "Thông Tin" : "Thông Tin";
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+    ...mapActions({
+      addBlood: "bloodstorage/addBlood",
+      updateBlood: "bloodstorage/updateBlood",
+      removeBlood: "bloodstorage/removeBlood",
+    }),
+
+    async initialize() {
+      this.loading = true;
+      try {
+        await this.loadBloodStorage;
+      } catch (e) {
+        console.error(e);
+      }
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+        this.actionTotal = true
+      }
+      this.loading = false;
+    },
+
+    editItem(item) {
+      this.pointDeducted = 0
+
+      this.editedIndex = this.bloodstorage.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    async deleteItem(item) {
+      this.loading = true;
+      if (confirm("Chắc chắn là XÓA nha?")) {
+        this.loading = true;
+        try {
+          await this.removeBlood(item);
+          // storage().refFromURL(item.image).delete();
+          this.loading = false;
+
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Xóa thông tin người này thành công";
+        } catch (e) {
+          this.loading = false;
+
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Xóa thông tin người này không thành công";
+
+          console.error(e);
+        }
+      } else {
+        this.loading = false;
+      }
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    async save() {
+      if (!this.$refs.dialogForm.validate()) return;
+
+      if (this.editedIndex > -1) {
+        this.loading = true;
+        try {
+          await this.updateBlood({
+            index: this.editedIndex,
+            blood: this.editedItem,
+          });
+          this.loading = false;
+          this.close();
+
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Lưu thông tin thành công";
+        } catch (e) {
+          this.loading = false;
+          this.close();
+
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Lưu thông tin không thành công";
+
+          console.error(e);
+        }
+      } else {
+        // this.editedItem.total = 1
+        this.loading = true;
+        try {
+          await this.addBlood(this.editedItem);
+          this.loading = false;
+          this.close();
+
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Thêm thông tin thành công";
+        } catch (e) {
+          this.loading = false;
+          this.close();
+
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Thêm thông tin không thành công";
+
+          console.error(e);
+        }
+      }
+    },
+
+    async changeTimeZone(date, timeZone) {
+      if (typeof date === 'string') {
+        return new Date(
+          new Date(date).toLocaleString('en-US', {
+            timeZone,
+          }),
+        );
+      }
+
+      return new Date(
+        date.toLocaleString('en-US', {
+          timeZone,
+        }),
+      );
+    },
+
+    uppercase() {
+      this.editedItem.bloodtype = this.editedItem.bloodtype.toUpperCase();
+    },
+
+    async exportBlood() {
+      this.loading = true;
+      const currentDay = new Date().getDate();
+      const currentMonth = new Date().getMonth() + 1;
+      try {
+        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+          const data = this.bloodstorage;
+          const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
+          const exportType = exportFromJSON.types.xls;
+
+          if (data) exportFromJSON({ data, fileName, exportType });
+        } else {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Bạn không có quyền xuất file";
+          this.loading = false;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      this.loading = false;
+    },
+
+    async addOldData() {
+      const data = null
+      if (data) {
+        try {
+          data.forEach(async e => {
+            await this.addBlood(e);
+          })
+        } catch (e) {
+          this.loading = false;
+          console.error(e);
+        }
+      } else {
+        console.log('import error')
+      }
+    },
+  },
+
+  filters: {
+    truncate: function (text, length, suffix) {
+      if (text.length > length) {
+        return text.substring(0, length) + suffix;
+      } else {
+        return text;
+      }
+    },
+  },
+};
+</script>
