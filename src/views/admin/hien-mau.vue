@@ -193,6 +193,7 @@ export default {
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
   },
+
   computed: {
     ...mapActions({
       loadBloodStorage: "bloodstorage/loadBloodStorage",
@@ -543,10 +544,6 @@ export default {
         console.log('import error')
       }
     },
-
-    changeTimezone(date, timezone) {
-      return new Date(date.getTime() - timezone * 60 * 1000)
-    }
   },
 
   filters: {

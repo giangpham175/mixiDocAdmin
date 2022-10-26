@@ -385,19 +385,6 @@ export default {
       this.loading = false;
     },
 
-    async refreshTime() {
-      this.loading = true;
-      try {
-        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
-
-        this.editedItem.time = nowTime.toLocaleString()
-        this.defaultItem.time = nowTime.toLocaleString()
-      } catch (e) {
-        console.error(e);
-      }
-      this.loading = false;
-    },
-
     async unlock() {
       this.loading = true;
       if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
@@ -450,10 +437,6 @@ export default {
         this.loading = false;
       }
     },
-
-    changeTimezone(date, timezone) {
-      return new Date(date.getTime() - timezone * 60 * 1000)
-    }
   },
 
   filters: {
