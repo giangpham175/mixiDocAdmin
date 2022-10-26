@@ -103,7 +103,6 @@
 </template>
 
 <script>
-// import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
 
@@ -150,6 +149,7 @@ export default {
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
   },
+
   computed: {
     ...mapActions({
       loadBloodStorage: "bloodstorage/loadBloodStorage",
@@ -326,22 +326,6 @@ export default {
         console.error(e);
       }
       this.loading = false;
-    },
-
-    async addOldData() {
-      const data = null
-      if (data) {
-        try {
-          data.forEach(async e => {
-            await this.addBlood(e);
-          })
-        } catch (e) {
-          this.loading = false;
-          console.error(e);
-        }
-      } else {
-        console.log('import error')
-      }
     },
   },
 
