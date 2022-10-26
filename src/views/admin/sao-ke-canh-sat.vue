@@ -164,6 +164,7 @@ export default {
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
   },
+
   computed: {
     ...mapActions({
       loadPoliceStation: "policeStation/loadPoliceStation",
@@ -364,22 +365,6 @@ export default {
 
           if (data) exportFromJSON({ data, fileName, exportType });
         }
-      } catch (e) {
-        console.error(e);
-      }
-      this.loading = false;
-    },
-
-    async refreshTime() {
-      this.loading = true;
-      try {
-        // const current = new Date()
-        const nowTimeAtDoctorPlace = this.changeTimezone(
-          new Date(),
-          -420,
-        )
-        this.editedItem.time = nowTimeAtDoctorPlace.toLocaleString()
-        this.defaultItem.time = nowTimeAtDoctorPlace.toLocaleString()
       } catch (e) {
         console.error(e);
       }

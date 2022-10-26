@@ -102,7 +102,6 @@
 </template>
   
 <script>
-// import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
 
@@ -162,6 +161,7 @@ export default {
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
     };
   },
+
   computed: {
     ...mapActions({
       loadNewbies: "newbies/loadNewbies",
@@ -370,23 +370,13 @@ export default {
     },
 
     async tickSupported(item) {
-
       this.loading = true;
       this.editedIndex = this.newbies.indexOf(item);
       this.editedItem = Object.assign({}, item);
 
       if (!this.editedItem.doctorSupported) {
         this.editedItem.doctorSupported = this.user.data.displayName
-        // const date = new Date();
-        // const hour = date.getUTCHours();
-        // const min = date.getUTCMinutes();
-        // const sec = date.getUTCSeconds();
-        // const year = date.getUTCFullYear();
-        // const month = date.getUTCMonth();
-        // const day = date.getUTCDate();
-        // const nowTimeAtDoctorPlace = `${hour + 7}:${min}:${sec}, ${day}/${month + 1}/${year}`
-        // this.editedItem.timeSupported = nowTimeAtDoctorPlace.toLocaleString()
-
+      
         const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
         this.editedItem.timeSupported = nowTime.toLocaleString()
 
