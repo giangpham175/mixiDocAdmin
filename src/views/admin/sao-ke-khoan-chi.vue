@@ -27,18 +27,19 @@
                         </v-text-field>
                       </v-col>
 
-                      <v-col cols="4" sm="4" md="4">
+                      <!-- <v-col cols="4" sm="4" md="4">
                         <v-text-field autofocus :disabled="loading" v-model="editedItem.cake" label="Bánh"
+                          type="number">
+                        </v-text-field>
+                      </v-col> -->
+
+                      <v-col cols="6" sm="6" md="6">
+                        <v-text-field autofocus :disabled="loading" v-model="editedItem.food" label="Bánh/Nước"
                           type="number">
                         </v-text-field>
                       </v-col>
 
-                      <v-col cols="4" sm="4" md="4">
-                        <v-text-field :disabled="loading" v-model="editedItem.water" label="Nước" type="number">
-                        </v-text-field>
-                      </v-col>
-
-                      <v-col cols="4" sm="4" md="4">
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.socola" label="Socola" type="number">
                         </v-text-field>
                       </v-col>
@@ -146,8 +147,7 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
-        cake: 0,
-        water: 0,
+        food: 0,
         socola: 0,
         reason: "",
         amount: "",
@@ -155,8 +155,7 @@ export default {
       },
       defaultItem: {
         name: "",
-        cake: 0,
-        water: 0,
+        food: 0,
         socola: 0,
         reason: "",
         amount: "",
@@ -291,8 +290,8 @@ export default {
 
           this.editedItem.time = nowTime.toLocaleString()
           this.defaultItem.time = nowTime.toLocaleString()
-          this.editedItem.reason = `${this.editedItem.cake} Bánh + ${this.editedItem.water} Nước + ${this.editedItem.socola} Socola`
-          this.editedItem.amount = this.editedItem.cake * 50 + this.editedItem.water * 50 + this.editedItem.socola * 200
+          this.editedItem.reason = `${this.editedItem.food} Bánh/Nước + ${this.editedItem.socola} Socola`
+          this.editedItem.amount = this.editedItem.food * 50 + this.editedItem.socola * 200
           this.loading = true;
           try {
             await this.updateExpense({
@@ -322,8 +321,8 @@ export default {
 
           this.editedItem.time = nowTime.toLocaleString()
           this.defaultItem.time = nowTime.toLocaleString()
-          this.editedItem.reason = `${this.editedItem.cake} Bánh + ${this.editedItem.water} Nước + ${this.editedItem.socola} Socola`
-          this.editedItem.amount = this.editedItem.cake * 50 + this.editedItem.water * 50 + this.editedItem.socola * 200
+          this.editedItem.reason = `${this.editedItem.food} Bánh/Nước + ${this.editedItem.socola} Socola`
+          this.editedItem.amount = this.editedItem.food * 50 + this.editedItem.socola * 200
           this.loading = true;
           try {
             await this.addExpense(this.editedItem);
