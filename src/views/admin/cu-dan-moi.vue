@@ -275,7 +275,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.user.data.email) {
+      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
 
         if (this.editedIndex > -1) {
           this.loading = true;
@@ -323,9 +323,10 @@ export default {
           }
         }
       } else {
-        if (confirm("Bạn không có quyền thêm người mới")) {
-          location.reload();
-        }
+        this.close()
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Bạn không có quyền thêm người mới";
         this.loading = false;
       }
     },

@@ -55,6 +55,12 @@
                       <v-col cols="12" sm="12" md="12" v-if="pointDeducted !== 0">
                         <span class="red--text">Đã trừ <b>{{ pointDeducted }}</b> điểm</span>
                       </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <span class="lead text--secondary my-2">Liên hệ bác sĩ
+                          <a href="https://discordapp.com/users/676718666401841152/" class="text-decoration-none"
+                            target="_blank">Hanwool</a> nếu có sai sót ở điểm Tổng
+                        </span>
+                      </v-col>
                       <v-col cols="12" sm="12" md="6" v-if="actionTotal">
                         <v-btn block color="warning" dark class="mb-2" @click="subtractTotal">Trừ Tổng (-1)</v-btn>
                       </v-col>
@@ -341,58 +347,70 @@ export default {
     async plus() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.editedIndex > -1) {
-        this.loading = true;
+      if (this.formTitle === 'Tích Lũy / Đổi Điểm') {
+        if (this.editedIndex > -1) {
+          this.loading = true;
 
-        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
-        this.editedItem.lasttime = nowTime.toLocaleString()
-        this.defaultItem.lasttime = nowTime.toLocaleString()
+          const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+          this.editedItem.lasttime = nowTime.toLocaleString()
+          this.defaultItem.lasttime = nowTime.toLocaleString()
 
-        this.editedItem.actionBy = this.user.data.displayName
-        this.defaultItem.actionBy = this.user.data.displayName
-        if (this.editedItem.accumulation === 0) {
-          this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
-          this.editedItem.total = Number(this.editedItem.total) + 1
-        } else {
-          this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
-          this.editedItem.total = Number(this.editedItem.total) + 1
+          this.editedItem.actionBy = this.user.data.displayName
+          this.defaultItem.actionBy = this.user.data.displayName
+          if (this.editedItem.accumulation === 0) {
+            this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
+            this.editedItem.total = Number(this.editedItem.total) + 1
+          } else {
+            this.editedItem.accumulation = Number(this.editedItem.accumulation) + 1
+            this.editedItem.total = Number(this.editedItem.total) + 1
+          }
+          try {
+            await this.updateBlood({
+              index: this.editedIndex,
+              blood: this.editedItem,
+            });
+            this.loading = false;
+
+          } catch (e) {
+            this.loading = false;
+            this.close();
+            console.error(e);
+          }
         }
-        try {
-          await this.updateBlood({
-            index: this.editedIndex,
-            blood: this.editedItem,
-          });
-          this.loading = false;
-
-        } catch (e) {
-          this.loading = false;
-          this.close();
-          console.error(e);
-        }
+      } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Không tích/đổi điểm trong quá trình đăng kí mới";
       }
     },
 
     async subtract() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.editedIndex > -1) {
-        if (this.editedItem.accumulation >= 2) {
-          this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
-        }
+      if (this.formTitle === 'Tích Lũy / Đổi Điểm') {
+        if (this.editedIndex > -1) {
+          if (this.editedItem.accumulation >= 2) {
+            this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
+          }
 
-        try {
-          await this.updateBlood({
-            index: this.editedIndex,
-            blood: this.editedItem,
-          });
-          this.pointDeducted = this.pointDeducted + 2
-          this.loading = false;
+          try {
+            await this.updateBlood({
+              index: this.editedIndex,
+              blood: this.editedItem,
+            });
+            this.pointDeducted = this.pointDeducted + 2
+            this.loading = false;
 
-        } catch (e) {
-          this.loading = false;
-          this.close();
-          console.error(e);
+          } catch (e) {
+            this.loading = false;
+            this.close();
+            console.error(e);
+          }
         }
+      } else {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Không tích/đổi điểm trong quá trình đăng kí mới";
       }
     },
 
