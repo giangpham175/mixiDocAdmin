@@ -27,12 +27,6 @@
                         </v-text-field>
                       </v-col>
 
-                      <!-- <v-col cols="4" sm="4" md="4">
-                        <v-text-field autofocus :disabled="loading" v-model="editedItem.cake" label="Bánh"
-                          type="number">
-                        </v-text-field>
-                      </v-col> -->
-
                       <v-col cols="6" sm="6" md="6">
                         <v-text-field autofocus :disabled="loading" v-model="editedItem.food" label="Bánh/Nước"
                           type="number">
@@ -162,8 +156,15 @@ export default {
         time: (new Date()).toLocaleString()
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
+      logItem: {
+        name: "",
+        category: "sao-ke-khoan-chi",
+        content: "",
+        time: "",
+      },
     };
   },
+
   computed: {
     ...mapActions({
       loadExpenses: "expenses/loadExpenses",
@@ -198,6 +199,7 @@ export default {
       removeExpense: "expenses/removeExpense",
       updateStatus: "allstatus/updateStatus",
       loadSaoKeKhoanChiStatus: "allstatus/loadSaoKeKhoanChiStatus",
+      addLog: "logs/addLog",
     }),
 
     async initialize() {
@@ -208,16 +210,12 @@ export default {
         const status = await this.loadSaoKeKhoanChiStatus();
         const statusDetail = status.data()
         this.actived = statusDetail.actived
+
+        this.logItem.name = this.user.data.displayName
       } catch (e) {
         console.error(e);
       }
       this.loading = false;
-    },
-
-    editItem(item) {
-      this.editedIndex = this.expenses.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
     },
 
     async deleteItem(item) {
@@ -226,14 +224,16 @@ export default {
         if (confirm("Chắc chắn là XÓA nha?")) {
           this.loading = true;
           try {
-            // if (this.user.data.email === item.name) {
             await this.removeExpense(item);
             this.loading = false;
+
+            this.logItem.time = this.editedItem.time
+            this.logItem.content = `xóa sao kê ngày ${item.time}`
+            await this.addLog(this.logItem);
 
             this.snack = true;
             this.snackColor = "success";
             this.snackText = "Xóa thông tin thành công";
-            // }
             this.loading = false;
           } catch (e) {
             this.loading = false;
@@ -285,63 +285,35 @@ export default {
       const status = await this.loadSaoKeKhoanChiStatus();
       const statusDetail = status.data()
       if (statusDetail.actived) {
-        if (this.editedIndex > -1) {
-          const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+        this.loading = true;
+        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
-          this.editedItem.time = nowTime.toLocaleString()
-          this.defaultItem.time = nowTime.toLocaleString()
-          this.editedItem.reason = `${this.editedItem.food} Bánh/Nước + ${this.editedItem.socola} Socola`
-          this.editedItem.amount = this.editedItem.food * 50 + this.editedItem.socola * 200
-          this.loading = true;
-          try {
-            await this.updateExpense({
-              index: this.editedIndex,
-              expense: this.editedItem,
-            });
-            this.loading = false;
-            this.close();
+        this.editedItem.time = nowTime.toLocaleString()
+        this.defaultItem.time = nowTime.toLocaleString()
+        this.editedItem.reason = `${this.editedItem.food} Bánh/Nước + ${this.editedItem.socola} Socola`
+        this.editedItem.amount = this.editedItem.food * 50 + this.editedItem.socola * 200
+        this.loading = true;
+        try {
+          await this.addExpense(this.editedItem);
+          this.loading = false;
+          this.close();
 
-            this.snack = true;
-            this.snackColor = "success";
-            this.snackText = "Xóa thông tin thành công";
-          } catch (e) {
-            this.loading = false;
-            this.close();
+          this.logItem.time = this.editedItem.time
+          this.logItem.content = `tạo sao kê giá ${this.editedItem.amount}`
+          await this.addLog(this.logItem);
 
-            this.snack = true;
-            this.snackColor = "error";
-            this.snackText = "Xóa thông tin không thành công";
+          this.snack = true;
+          this.snackColor = "success";
+          this.snackText = "Thêm thông tin thành công";
+        } catch (e) {
+          this.loading = false;
+          this.close();
 
-            console.error(e);
-          }
-        } else {
-          // this.editedItem.total = 1
-          this.loading = true;
-          const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "Thêm thông tin không thành công";
 
-          this.editedItem.time = nowTime.toLocaleString()
-          this.defaultItem.time = nowTime.toLocaleString()
-          this.editedItem.reason = `${this.editedItem.food} Bánh/Nước + ${this.editedItem.socola} Socola`
-          this.editedItem.amount = this.editedItem.food * 50 + this.editedItem.socola * 200
-          this.loading = true;
-          try {
-            await this.addExpense(this.editedItem);
-            this.loading = false;
-            this.close();
-
-            this.snack = true;
-            this.snackColor = "success";
-            this.snackText = "Thêm thông tin thành công";
-          } catch (e) {
-            this.loading = false;
-            this.close();
-
-            this.snack = true;
-            this.snackColor = "error";
-            this.snackText = "Thêm thông tin không thành công";
-
-            console.error(e);
-          }
+          console.error(e);
         }
       } else {
         if (confirm("Trạng thái Sao Kê hiện đang bị khóa. Vui lòng chờ Bác sĩ Hanwool kiểm tra")) {
