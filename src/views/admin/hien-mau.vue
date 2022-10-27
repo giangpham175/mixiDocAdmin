@@ -109,12 +109,11 @@
         <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
           mdi-plus-minus-variant
         </v-icon>
-        <!-- <v-icon small @click="deleteItem(item)" color="error">
+        <v-icon small v-if="actionTotal" @click="deleteItem(item)" color="error">
           mdi-delete
-        </v-icon> -->
+        </v-icon>
       </template>
       <template v-slot:no-data>
-        <!-- <v-btn color="primary" @click="initialize">Reset</v-btn> -->
         <v-btn color="primary" @click="addOldData">Add new data</v-btn>
       </template>
     </v-data-table>
@@ -129,7 +128,6 @@
 </template>
 
 <script>
-// import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
 
@@ -251,7 +249,6 @@ export default {
         this.loading = true;
         try {
           await this.removeBlood(item);
-          // storage().refFromURL(item.image).delete();
           this.loading = false;
 
           this.snack = true;
