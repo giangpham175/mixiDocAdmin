@@ -103,6 +103,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
+import * as utils from '../../utils/index';
 
 export default {
   data() {
@@ -263,22 +264,6 @@ export default {
       });
     },
 
-    async changeTimeZone(date, timeZone) {
-      if (typeof date === 'string') {
-        return new Date(
-          new Date(date).toLocaleString('en-US', {
-            timeZone,
-          }),
-        );
-      }
-
-      return new Date(
-        date.toLocaleString('en-US', {
-          timeZone,
-        }),
-      );
-    },
-
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
@@ -286,7 +271,7 @@ export default {
       const statusDetail = status.data()
       if (statusDetail.actived) {
         this.loading = true;
-        const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+        const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
         this.editedItem.time = nowTime.toLocaleString()
         this.defaultItem.time = nowTime.toLocaleString()
