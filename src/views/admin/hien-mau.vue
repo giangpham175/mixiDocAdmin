@@ -392,14 +392,14 @@ export default {
         if (this.editedIndex > -1) {
           if (this.editedItem.accumulation >= 2) {
             this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
+            this.pointDeducted = this.pointDeducted + 2
           }
 
           try {
-            await this.updateBlood({
+             await this.updateBlood({
               index: this.editedIndex,
               blood: this.editedItem,
             });
-            this.pointDeducted = this.pointDeducted + 2
             this.loading = false;
 
           } catch (e) {
