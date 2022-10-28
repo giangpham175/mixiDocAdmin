@@ -104,6 +104,7 @@
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
 import * as utils from '../../utils/index';
+import * as constants from '../../constants/index';
 
 export default {
   data() {
@@ -211,11 +212,10 @@ export default {
         const status = await this.loadSaoKeKhoanChiStatus();
         const statusDetail = status.data()
         this.actived = statusDetail.actived
-
-        this.logItem.name = this.user.data.displayName
       } catch (e) {
         console.error(e);
       }
+      this.logItem.name = this.user.data.displayName
       this.loading = false;
     },
 
@@ -312,7 +312,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+        if (constants.adminUser.includes(this.user.data.email)) {
           const allStatus = await this.allstatus;
           await allStatus.forEach(async e => {
             if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === true) {
@@ -344,7 +344,7 @@ export default {
 
     async unlock() {
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+      if (constants.adminUser.includes(this.user.data.email)) {
         const data = await this.allstatus;
         await data.forEach(async e => {
           if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
@@ -367,7 +367,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.expenses;

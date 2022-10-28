@@ -1,3 +1,7 @@
+function padTo2Digits(num) {
+  return num.toString().padStart(2, "0");
+}
+
 export function changeTimeZone(date, timeZone) {
   if (typeof date === "string") {
     return new Date(
@@ -14,8 +18,16 @@ export function changeTimeZone(date, timeZone) {
   );
 
   const dformat =
-    [time.getMonth() + 1, time.getDate(), time.getFullYear()].join("/") +
-    " " +
-    [time.getHours(), time.getMinutes(), time.getSeconds()].join(":");
+    [
+      padTo2Digits(time.getDate()),
+      padTo2Digits(time.getMonth() + 1),
+      time.getFullYear(),
+    ].join("/") +
+    ", " +
+    [
+      padTo2Digits(time.getHours()),
+      padTo2Digits(time.getMinutes()),
+      padTo2Digits(time.getSeconds()),
+    ].join(":");
   return dformat;
 }

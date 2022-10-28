@@ -17,10 +17,10 @@
 
     <v-app-bar app clipped-left dark color="primary">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Mixi Doctor</v-toolbar-title>
+      <v-toolbar-title>Hello.. <b>{{this.user.data.displayName}}</b> !</v-toolbar-title>
       <v-spacer />
       <v-btn text icon @click="dark = !dark">
-        <v-icon>{{ dark ? 'mdi-brightness-4' : 'mdi-brightness-6'}}</v-icon>
+        <v-icon>{{ dark ? 'mdi-brightness-4' : 'mdi-brightness-6' }}</v-icon>
       </v-btn>
       <v-btn text icon @click="logOut()">
         <v-icon>mdi-power</v-icon>
@@ -39,9 +39,9 @@
 
     <v-footer app>
       <div class="flex text-center">
-        <span class="lead text--secondary text-center">Created by ❤️
-          <a href="https://discordapp.com/users/252435602383962113/" class="text-decoration-none" target="_blank">G
-            Null</a>
+        <span class="lead text--secondary text-center">👉
+          <a href="https://discord.com/channels/828442366285316136/1003532081114136596" class="text-decoration-none"
+            target="_blank">Thông Báo Bệnh Viện</a>👈
         </span>
       </div>
     </v-footer>
@@ -50,7 +50,7 @@
 
 <script>
 import firebase from 'firebase';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data: () => ({
@@ -75,8 +75,9 @@ export default {
   },
   computed: {
     ...mapActions({
-      loadSounds: 'sounds/loadSounds',
-      loadCategories: 'categories/loadCategories',
+    }),
+    ...mapGetters({
+      user: "auth/user",
     }),
   },
   methods: {

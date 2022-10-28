@@ -4,7 +4,7 @@
       loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Lịch Sử Thao Tác (đang thử nghiệm)</v-toolbar-title>
+          <v-toolbar-title>Lịch Sử Thao Tác</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
 
@@ -50,6 +50,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
+import * as constants from '../../constants/index';
 
 export default {
   data() {
@@ -124,7 +125,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+        if (constants.adminUser.includes(this.user.data.email)) {
 
           const data = this.logs;
           const fileName = "logs-" + currentDay + "-" + currentMonth;
@@ -145,7 +146,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.logs;

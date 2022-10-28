@@ -83,9 +83,9 @@
         <v-icon medium class="mr-2" @click="tickSupported(item)" color="warning">
           mdi-sticker-check
         </v-icon>
-        <!-- <v-icon small @click="deleteItem(item)" color="error">
+        <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
             mdi-delete
-          </v-icon> -->
+          </v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -105,10 +105,12 @@
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
 import * as utils from '../../utils/index';
+import * as constants from '../../constants/index';
 
 export default {
   data() {
     return {
+      actionAdmin: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -160,6 +162,12 @@ export default {
         doctorSupported: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
+      logItem: {
+        name: "",
+        category: "cu-dan-moi",
+        content: "",
+        time: "",
+      },
     };
   },
 
@@ -191,10 +199,16 @@ export default {
       addNewbie: "newbies/addNewbie",
       updateNewbie: "newbies/updateNewbie",
       removeNewbie: "newbies/removeNewbie",
+      addLog: "logs/addLog",
     }),
 
     async initialize() {
       this.loading = true;
+      this.logItem.name = this.user.data.displayName
+      if (constants.adminUser.includes(this.user.data.email)) {
+        this.actionAdmin = true
+      }
+
       try {
         await this.loadNewbies;
       } catch (e) {
@@ -237,7 +251,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com' && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.expenses;
@@ -276,7 +290,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+      if (constants.adminUser.includes(this.user.data.email)) {
 
         if (this.editedIndex > -1) {
           this.loading = true;
@@ -337,7 +351,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+        if (constants.adminUser.includes(this.user.data.email)) {
           const data = this.newbies;
           const fileName = "cu-dan-moi-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
@@ -365,12 +379,16 @@ export default {
         const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
         this.editedItem.timeSupported = nowTime.toLocaleString()
 
-        if (confirm(`Hỗ trợ cho cư dân ${this.editedItem.name} ?`)) {
+        if (confirm(`Đồng ý hỗ trợ cho cư dân: ${this.editedItem.name} ?`)) {
           try {
             await this.updateNewbie({
               index: this.editedIndex,
               newbie: this.editedItem,
             });
+
+            this.logItem.time = this.editedItem.timeSupported
+            this.logItem.content = `hỗ trợ cư dân: ${this.editedItem.name}`
+            await this.addLog(this.logItem);
 
             this.snack = true;
             this.snackColor = "success";
