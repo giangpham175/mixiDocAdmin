@@ -12,6 +12,7 @@ import HienMau from "../views/admin/hien-mau";
 import SaoKeKhoanChi from "../views/admin/sao-ke-khoan-chi";
 import SaoKeCanhSat from "../views/admin/sao-ke-canh-sat";
 import CuDanMoi from "../views/admin/cu-dan-moi";
+import Logger from "../views/admin/logger";
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,7 @@ const routes = [
       { path: "khoan-chi", component: SaoKeKhoanChi },
       { path: "canh-sat", component: SaoKeCanhSat },
       { path: "cu-dan-moi", component: CuDanMoi },
+      { path: "logger", component: Logger },
     ],
     meta: {
       requiresAuth: true,

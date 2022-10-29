@@ -61,10 +61,10 @@
                             target="_blank">Hanwool</a> nếu có sai sót ở điểm Tổng
                         </span>
                       </v-col>
-                      <v-col cols="12" sm="12" md="6" v-if="actionTotal">
+                      <v-col cols="12" sm="12" md="6" v-if="actionAdmin">
                         <v-btn block color="warning" dark class="mb-2" @click="subtractTotal">Trừ Tổng (-1)</v-btn>
                       </v-col>
-                      <v-col cols="12" sm="12" md="6" v-if="actionTotal">
+                      <v-col cols="12" sm="12" md="6" v-if="actionAdmin">
                         <v-btn block color="primary" dark class="mb-2" @click="plusTotal">Cộng Tổng (+1)</v-btn>
                       </v-col>
                     </v-row>
@@ -109,12 +109,11 @@
         <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
           mdi-plus-minus-variant
         </v-icon>
-        <!-- <v-icon small @click="deleteItem(item)" color="error">
+        <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
           mdi-delete
-        </v-icon> -->
+        </v-icon>
       </template>
       <template v-slot:no-data>
-        <!-- <v-btn color="primary" @click="initialize">Reset</v-btn> -->
         <v-btn color="primary" @click="addOldData">Add new data</v-btn>
       </template>
     </v-data-table>
@@ -129,14 +128,15 @@
 </template>
 
 <script>
-// import { storage } from "firebase";
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
+import * as utils from '../../utils/index';
+import * as constants from '../../constants/index';
 
 export default {
   data() {
     return {
-      actionTotal: false,
+      actionAdmin: false,
       pointDeducted: 0,
       snack: false,
       snackColor: "",
@@ -191,6 +191,12 @@ export default {
         bloodtype: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
+      logItem: {
+        name: "",
+        category: "hien-mau",
+        content: "",
+        time: "",
+      },
     };
   },
 
@@ -222,6 +228,7 @@ export default {
       addBlood: "bloodstorage/addBlood",
       updateBlood: "bloodstorage/updateBlood",
       removeBlood: "bloodstorage/removeBlood",
+      addLog: "logs/addLog",
     }),
 
     async initialize() {
@@ -231,9 +238,10 @@ export default {
       } catch (e) {
         console.error(e);
       }
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
-        this.actionTotal = true
+      if (constants.adminUser.includes(this.user.data.email)) {
+        this.actionAdmin = true
       }
+      this.logItem.name = this.user.data.displayName
       this.loading = false;
     },
 
@@ -251,7 +259,6 @@ export default {
         this.loading = true;
         try {
           await this.removeBlood(item);
-          // storage().refFromURL(item.image).delete();
           this.loading = false;
 
           this.snack = true;
@@ -281,6 +288,7 @@ export default {
 
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
+      const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
       if (this.editedIndex > -1) {
         this.loading = true;
@@ -291,6 +299,10 @@ export default {
           });
           this.loading = false;
           this.close();
+
+          this.logItem.time = nowTime.toLocaleString()
+          this.logItem.content = `cập nhật cư dân: ${this.editedItem.name}`
+          await this.addLog(this.logItem);
 
           this.snack = true;
           this.snackColor = "success";
@@ -313,6 +325,10 @@ export default {
           this.loading = false;
           this.close();
 
+          this.logItem.time = nowTime.toLocaleString()
+          this.logItem.content = `đăng kí cư dân: ${this.editedItem.name}`
+          await this.addLog(this.logItem);
+
           this.snack = true;
           this.snackColor = "success";
           this.snackText = "Thêm thông tin thành công";
@@ -329,22 +345,6 @@ export default {
       }
     },
 
-    async changeTimeZone(date, timeZone) {
-      if (typeof date === 'string') {
-        return new Date(
-          new Date(date).toLocaleString('en-US', {
-            timeZone,
-          }),
-        );
-      }
-
-      return new Date(
-        date.toLocaleString('en-US', {
-          timeZone,
-        }),
-      );
-    },
-
     async plus() {
       if (!this.$refs.dialogForm.validate()) return;
 
@@ -352,7 +352,7 @@ export default {
         if (this.editedIndex > -1) {
           this.loading = true;
 
-          const nowTime = await this.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+          const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
           this.editedItem.lasttime = nowTime.toLocaleString()
           this.defaultItem.lasttime = nowTime.toLocaleString()
 
@@ -371,6 +371,10 @@ export default {
               blood: this.editedItem,
             });
             this.loading = false;
+
+            this.logItem.time = nowTime.toLocaleString()
+            this.logItem.content = `tích điểm cư dân: ${this.editedItem.name}`
+            await this.addLog(this.logItem);
 
           } catch (e) {
             this.loading = false;
@@ -392,6 +396,7 @@ export default {
         if (this.editedIndex > -1) {
           if (this.editedItem.accumulation >= 2) {
             this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
+            this.pointDeducted = this.pointDeducted + 2
           }
 
           try {
@@ -399,8 +404,12 @@ export default {
               index: this.editedIndex,
               blood: this.editedItem,
             });
-            this.pointDeducted = this.pointDeducted + 2
             this.loading = false;
+
+            const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+            this.logItem.time = nowTime.toLocaleString()
+            this.logItem.content = `đổi điểm cư dân: ${this.editedItem.name}`
+            await this.addLog(this.logItem);
 
           } catch (e) {
             this.loading = false;
@@ -469,7 +478,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+        if (constants.adminUser.includes(this.user.data.email)) {
           const data = this.bloodstorage;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
@@ -490,11 +499,11 @@ export default {
     // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
     async resetPoint() {
       this.loading = true;
-      if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+      if (constants.adminUser.includes(this.user.data.email)) {
         this.loading = true;
         if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
           try {
-            // if (this.user.data.email === 'mynguyenngoc22@gmail.com') {
+            // if (constants.adminUser.includes(this.user.data.email)) {
             const data = this.bloodstorage;
             await data.forEach(async item => {
               item.accumulation = 0
