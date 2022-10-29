@@ -17,7 +17,7 @@
 
     <v-app-bar app clipped-left dark color="primary">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Hello.. <b>{{this.user.data.displayName}}</b> !</v-toolbar-title>
+      <v-toolbar-title>Hello.. <b>{{ this.user.data.displayName }}</b> !</v-toolbar-title>
       <v-spacer />
       <v-btn text icon @click="dark = !dark">
         <v-icon>{{ dark ? 'mdi-brightness-4' : 'mdi-brightness-6' }}</v-icon>
@@ -40,8 +40,8 @@
     <v-footer app>
       <div class="flex text-center">
         <span class="lead text--secondary text-center">👉
-          <a href="https://discord.com/channels/828442366285316136/1003532081114136596" class="text-decoration-none"
-            target="_blank">Thông Báo Bệnh Viện</a>👈
+          <a href="https://discord.com/channels/977929596173426748/977929596903252034" class="text-decoration-none"
+            target="_blank">Thông Báo Bệnh Viện</a> 👈
         </span>
       </div>
     </v-footer>

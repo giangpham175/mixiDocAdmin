@@ -92,6 +92,7 @@ export default {
     }),
     ...mapGetters({
       logs: "logs/getLogs",
+      user: "auth/user",
     }),
   },
 
