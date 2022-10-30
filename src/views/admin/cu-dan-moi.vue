@@ -84,8 +84,8 @@
           mdi-sticker-check
         </v-icon>
         <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
-            mdi-delete
-          </v-icon>
+          mdi-delete
+        </v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -254,7 +254,7 @@ export default {
       if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
-          const data = this.expenses;
+          const data = this.newbies;
           await data.forEach(async item => {
             await this.removeNewbie(item)
           })
