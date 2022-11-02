@@ -252,9 +252,6 @@ export default {
       this.editedIndex = this.bloodstorage.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
-
-      console.log('🔥🔥');
-      await this.getBlood(item);
     },
 
     async deleteItem(item) {
@@ -355,6 +352,7 @@ export default {
       if (this.formTitle === 'Tích Lũy / Đổi Điểm') {
         if (this.editedIndex > -1) {
           this.loading = true;
+          const currentPoint = this.editedItem.accumulation
 
           const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
           this.editedItem.lasttime = nowTime.toLocaleString()
@@ -377,7 +375,7 @@ export default {
             this.loading = false;
 
             this.logItem.time = nowTime.toLocaleString()
-            this.logItem.content = `tích điểm cư dân: ${this.editedItem.name}`
+            this.logItem.content = `tích điểm cư dân: ${this.editedItem.name} từ ${currentPoint} lên ${this.editedItem.accumulation}`
             await this.addLog(this.logItem);
 
           } catch (e) {
@@ -398,6 +396,8 @@ export default {
 
       if (this.formTitle === 'Tích Lũy / Đổi Điểm') {
         if (this.editedIndex > -1) {
+          const currentPoint = this.editedItem.accumulation
+
           if (this.editedItem.accumulation >= 2) {
             this.editedItem.accumulation = Number(this.editedItem.accumulation) - 2
             this.pointDeducted = this.pointDeducted + 2
@@ -412,7 +412,7 @@ export default {
 
             const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
             this.logItem.time = nowTime.toLocaleString()
-            this.logItem.content = `đổi điểm cư dân: ${this.editedItem.name}`
+            this.logItem.content = `đổi điểm cư dân: ${this.editedItem.name} từ ${currentPoint} xuống ${this.editedItem.accumulation}`
             await this.addLog(this.logItem);
 
           } catch (e) {
