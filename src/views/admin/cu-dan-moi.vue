@@ -388,7 +388,7 @@ export default {
 
             this.logItem.time = this.editedItem.timeSupported
             this.logItem.content = `hỗ trợ cư dân: ${this.editedItem.name}`
-            await this.addLog(this.logItem);
+            // await this.addLog(this.logItem);
 
             this.snack = true;
             this.snackColor = "success";

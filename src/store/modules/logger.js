@@ -26,14 +26,14 @@ const logs = {
   },
   actions: {
     async addLog({ commit }, log) {
-      console.log(log);
-      commit("ADD_LOG", log);
-      return;
-      // const docRef = await firestore()
-      //   .collection(collName)
-      //   .add(log);
-      // log.id = docRef.id;
+      // console.log(log);
       // commit("ADD_LOG", log);
+      // return;
+      const docRef = await firestore()
+        .collection(collName)
+        .add(log);
+      log.id = docRef.id;
+      commit("ADD_LOG", log);
     },
     async loadLogs({ commit }) {
       const querySnapshot = await firestore()

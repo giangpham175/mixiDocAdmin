@@ -228,6 +228,7 @@ export default {
       addBlood: "bloodstorage/addBlood",
       updateBlood: "bloodstorage/updateBlood",
       removeBlood: "bloodstorage/removeBlood",
+      getBlood: "bloodstorage/getBlood",
       addLog: "logs/addLog",
     }),
 
@@ -245,12 +246,15 @@ export default {
       this.loading = false;
     },
 
-    editItem(item) {
-      this.pointDeducted = 0
+    async editItem(item) {
+      this.pointDeducted = 0;
 
       this.editedIndex = this.bloodstorage.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
+
+      console.log('🔥🔥');
+      await this.getBlood(item);
     },
 
     async deleteItem(item) {
@@ -302,7 +306,7 @@ export default {
 
           this.logItem.time = nowTime.toLocaleString()
           this.logItem.content = `cập nhật cư dân: ${this.editedItem.name}`
-          await this.addLog(this.logItem);
+          // await this.addLog(this.logItem);
 
           this.snack = true;
           this.snackColor = "success";
@@ -327,7 +331,7 @@ export default {
 
           this.logItem.time = nowTime.toLocaleString()
           this.logItem.content = `đăng kí cư dân: ${this.editedItem.name}`
-          await this.addLog(this.logItem);
+          // await this.addLog(this.logItem);
 
           this.snack = true;
           this.snackColor = "success";

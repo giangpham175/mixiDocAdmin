@@ -230,7 +230,7 @@ export default {
 
             this.logItem.time = this.editedItem.time
             this.logItem.content = `xóa sao kê ngày ${item.time}`
-            await this.addLog(this.logItem);
+            // await this.addLog(this.logItem);
 
             this.snack = true;
             this.snackColor = "success";
@@ -285,7 +285,7 @@ export default {
 
           this.logItem.time = this.editedItem.time
           this.logItem.content = `tạo sao kê giá ${this.editedItem.amount}`
-          await this.addLog(this.logItem);
+          // await this.addLog(this.logItem);
 
           this.snack = true;
           this.snackColor = "success";
