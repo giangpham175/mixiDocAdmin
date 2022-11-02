@@ -249,8 +249,24 @@ export default {
     async editItem(item) {
       this.pointDeducted = 0;
 
+      const getNewData = await this.getBlood(item);
+      const newData = getNewData.data()
+
       this.editedIndex = this.bloodstorage.indexOf(item);
       this.editedItem = Object.assign({}, item);
+
+      if (item.accumulation !== newData.accumulation) {
+        this.editedItem.accumulation = newData.accumulation
+        this.editedItem.actionBy = newData.actionBy
+        this.editedItem.total = newData.total
+        this.editedItem.lasttime = newData.lasttime
+
+        await this.updateBlood({
+          index: this.editedIndex,
+          blood: this.editedItem,
+        });
+      }
+
       this.dialog = true;
     },
 

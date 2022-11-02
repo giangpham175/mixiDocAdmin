@@ -26,6 +26,11 @@ const bloodstorage = {
       const index = state.bloodstorage.indexOf(blood);
       state.bloodstorage.splice(index, 1);
     },
+
+    SET_BLOOD(state, blood) {
+      console.log(state, blood);
+      return;
+    },
   },
   actions: {
     async addBlood({ commit }, blood) {
@@ -60,6 +65,15 @@ const bloodstorage = {
         .doc(blood.id)
         .delete();
       commit("REMOVE_BLOOD", blood);
+    },
+
+    async getBlood({ commit }, blood) {
+      commit("SET_BLOOD", blood);
+      const doc = await firestore()
+        .collection(collName)
+        .doc(blood.id)
+        .get();
+      return doc;
     },
   },
 };
