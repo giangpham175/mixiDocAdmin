@@ -65,7 +65,7 @@ export default {
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
       // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
       { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-crowd' },
-      // { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
+      { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
     ]
   }),
   created() {
