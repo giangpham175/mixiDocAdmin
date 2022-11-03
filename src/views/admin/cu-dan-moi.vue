@@ -87,6 +87,9 @@
         <v-icon medium class="mr-2" @click="tickSupported(item)" color="warning">
           mdi-sticker-check
         </v-icon>
+        <v-icon medium v-if="actionAdmin" @click="editItem(item)" color="primary">
+          mdi-pencil
+        </v-icon>
         <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
           mdi-delete
         </v-icon>
