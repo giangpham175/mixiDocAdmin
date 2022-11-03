@@ -34,6 +34,10 @@
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
+                        <v-text-field :disabled="loading" v-model="editedItem.timeImmigration" label="Ngày nhập cư">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
                         <v-text-field disabled v-model="editedItem.timeSupported" label="Thời gian hỗ trợ">
                         </v-text-field>
                       </v-col>
@@ -135,6 +139,11 @@ export default {
           value: "dob",
         },
         {
+          text: "Ngày nhập cư",
+          sortable: true,
+          value: "timeImmigration",
+        },
+        {
           text: "Thời gian hỗ trợ",
           sortable: true,
           value: "timeSupported",
@@ -151,6 +160,7 @@ export default {
         name: "",
         gender: "",
         dob: "",
+        timeImmigration: "",
         timeSupported: "",
         doctorSupported: "",
       },
@@ -158,6 +168,7 @@ export default {
         name: "",
         gender: "",
         dob: "",
+        timeImmigration: "",
         timeSupported: "",
         doctorSupported: "",
       },
