@@ -90,7 +90,13 @@ export default {
         });
     },
     goto(newPath) {
-      this.$router.push({ path: this.path + newPath }).catch(() => { });
+      if (newPath === '/logger') {
+        if (confirm(`Xem mục này sẽ tiêu tốn tài nguyên của bạn và hệ thống, chỉ nên tra cứu mục này khi cần thiết\n\nOK để tiếp tục truy cập\nCancel để dừng truy cập`)) {
+          this.$router.push({ path: this.path + newPath }).catch(() => { });
+        }
+      } else {
+        this.$router.push({ path: this.path + newPath }).catch(() => { });
+      }
     }
   },
   watch: {
