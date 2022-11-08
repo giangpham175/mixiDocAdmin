@@ -9,6 +9,7 @@ import allstatus from "./modules/status";
 import policeStation from "./modules/ho-so-canh-sat";
 import newbies from "./modules/cu-dan-moi";
 import logs from "./modules/logger";
+import accounts from "./modules/accounts";
 
 Vue.use(Vuex);
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     allstatus,
     policeStation,
     newbies,
-    logs
+    logs,
+    accounts,
   },
 });

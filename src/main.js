@@ -20,6 +20,7 @@ const configOptions = {
 };
 
 firebase.initializeApp(configOptions);
+const secondaryApp = firebase.initializeApp(configOptions, "Secondary");
 
 let app;
 
@@ -34,3 +35,6 @@ firebase.auth().onAuthStateChanged((user) => {
     }).$mount("#app");
   }
 });
+
+const projectAuth = firebase.auth();
+export { projectAuth, secondaryApp };

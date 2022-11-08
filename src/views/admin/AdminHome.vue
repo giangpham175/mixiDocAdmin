@@ -51,6 +51,7 @@
 <script>
 import firebase from 'firebase';
 import { mapActions, mapGetters } from 'vuex';
+import * as constants from '../../constants/index';
 
 export default {
   data: () => ({
@@ -64,8 +65,9 @@ export default {
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
       // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
-      { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-crowd' },
+      { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-account-group' },
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
+      { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
     ]
   }),
   created() {
@@ -92,6 +94,14 @@ export default {
     goto(newPath) {
       if (newPath === '/logger') {
         if (confirm(`Xem mục này sẽ tiêu tốn tài nguyên của bạn và hệ thống, chỉ nên tra cứu mục này khi cần thiết\n\nOK để tiếp tục truy cập\nCancel để dừng truy cập`)) {
+          this.$router.push({ path: this.path + newPath }).catch(() => { });
+        }
+      } else if (newPath === '/accounts') {
+        if (!constants.adminUser.includes(this.user.data.email)) {
+          if (confirm(`Danh mục để quản lý tất cả các tài khoản của bác sĩ, bạn không có đủ quyền hạn.`)) {
+            return
+          }
+        } else {
           this.$router.push({ path: this.path + newPath }).catch(() => { });
         }
       } else {
