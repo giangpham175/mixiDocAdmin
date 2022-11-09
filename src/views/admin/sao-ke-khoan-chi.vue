@@ -109,6 +109,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
+      isAdmin: false,
       actived: false,
       snack: false,
       snackColor: "",
@@ -164,6 +165,9 @@ export default {
         content: "",
         time: "",
       },
+      userData: {
+        uid: ""
+      },
     };
   },
 
@@ -202,6 +206,7 @@ export default {
       updateStatus: "allstatus/updateStatus",
       loadSaoKeKhoanChiStatus: "allstatus/loadSaoKeKhoanChiStatus",
       addLog: "logs/addLog",
+      getAccount: "accounts/getAccount",
     }),
 
     async initialize() {
@@ -216,6 +221,15 @@ export default {
         console.error(e);
       }
       this.logItem.name = this.user.data.displayName
+
+      this.userData.uid = this.user.data.uid
+      await this.getAccount(this.userData)
+      const account = await this.getAccount(this.userData)
+
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+        this.isAdmin = true
+      }
+
       this.loading = false;
     },
 
@@ -312,7 +326,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
           const allStatus = await this.allstatus;
           await allStatus.forEach(async e => {
             if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === true) {
@@ -344,7 +358,7 @@ export default {
 
     async unlock() {
       this.loading = true;
-      if (constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
         const data = await this.allstatus;
         await data.forEach(async e => {
           if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
@@ -367,7 +381,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.expenses;

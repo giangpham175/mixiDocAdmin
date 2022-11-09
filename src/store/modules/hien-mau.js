@@ -28,7 +28,7 @@ const bloodstorage = {
     },
 
     SET_BLOOD(state, blood) {
-      console.log(state, blood);
+      state, blood;
       return;
     },
   },

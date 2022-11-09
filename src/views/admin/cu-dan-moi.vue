@@ -84,13 +84,22 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon medium class="mr-2" @click="tickSupported(item)" color="warning">
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="tickSupported(item)" color="warning">
+              mdi-sticker-check
+            </v-icon>
+          </template>
+          <span>Xác nhận hỗ trợ</span>
+        </v-tooltip>
+
+        <!-- <v-icon medium class="mr-2" @click="tickSupported(item)" color="warning">
           mdi-sticker-check
-        </v-icon>
-        <v-icon medium v-if="actionAdmin" @click="editItem(item)" color="primary">
+        </v-icon> -->
+        <v-icon medium v-if="isAdmin" @click="editItem(item)" color="primary">
           mdi-pencil
         </v-icon>
-        <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
+        <v-icon small v-if="isAdmin" @click="deleteItem(item)" color="error">
           mdi-delete
         </v-icon>
       </template>
@@ -117,7 +126,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      actionAdmin: false,
+      isAdmin: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -182,6 +191,9 @@ export default {
         content: "",
         time: "",
       },
+      userData: {
+        uid: ""
+      },
     };
   },
 
@@ -214,13 +226,19 @@ export default {
       updateNewbie: "newbies/updateNewbie",
       removeNewbie: "newbies/removeNewbie",
       addLog: "logs/addLog",
+      getAccount: "accounts/getAccount",
     }),
 
     async initialize() {
       this.loading = true;
       this.logItem.name = this.user.data.displayName
-      if (constants.adminUser.includes(this.user.data.email)) {
-        this.actionAdmin = true
+
+      this.userData.uid = this.user.data.uid
+      await this.getAccount(this.userData)
+      const account = await this.getAccount(this.userData)
+
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+        this.isAdmin = true
       }
 
       try {

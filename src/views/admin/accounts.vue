@@ -70,14 +70,30 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon medium class="mr-2" @click="resetPassword(item)" color="warning">
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" class="mr-2" @click="resetPassword(item)"
+              color="warning">
+              mdi-form-textbox-password
+            </v-icon>
+          </template>
+          <span>Reset Password</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" @click="changeStatus(item)" color="primary">
+              mdi-account-switch-outline
+            </v-icon>
+          </template>
+          <span>Active / Deactive</span>
+        </v-tooltip>
+
+        <!-- <v-icon medium v-if="isAdmin" class="mr-2" @click="resetPassword(item)" color="warning">
           mdi-form-textbox-password
         </v-icon>
-        <v-icon medium v-if="actionAdmin" @click="changeStatus(item)" color="primary">
+        <v-icon medium v-if="isAdmin" @click="changeStatus(item)" color="primary">
           mdi-account-switch-outline
-        </v-icon>
-        <!-- <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
-          mdi-delete
         </v-icon> -->
       </template>
       <template v-slot:no-data>
@@ -103,7 +119,7 @@ export default {
     return {
       roles: ['Doctor', 'Admin'],
       status: ['Active', 'Deactive'],
-      actionAdmin: false,
+      isAdmin: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -157,7 +173,10 @@ export default {
       },
       resetPasswordInfo: {
         email: "",
-      }
+      },
+      userData: {
+        uid: ""
+      },
     };
   },
 
@@ -190,13 +209,20 @@ export default {
       updateAccount: "accounts/updateAccount",
       signUp: "auth/signUp",
       sendEmailresetPassword: "auth/sendEmailresetPassword",
+      getAccount: "accounts/getAccount",
     }),
 
     async initialize() {
       this.loading = true;
-      if (constants.adminUser.includes(this.user.data.email)) {
-        this.actionAdmin = true
+
+      this.userData.uid = this.user.data.uid
+      await this.getAccount(this.userData)
+      const account = await this.getAccount(this.userData)
+
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+        this.isAdmin = true
       }
+
 
       try {
         await this.loadAccounts;
@@ -243,7 +269,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
         this.loading = true;
         try {
           this.dataSignup.email = this.editedItem.email
@@ -306,6 +332,7 @@ export default {
             console.error(e);
           }
         }
+        this.loading = false;
         return
       }
 
@@ -332,6 +359,7 @@ export default {
             console.error(e);
           }
         }
+        this.loading = false;
         return
       }
 

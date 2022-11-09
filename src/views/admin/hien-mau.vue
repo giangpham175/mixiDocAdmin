@@ -61,10 +61,10 @@
                             target="_blank">Hanwool</a> nếu có sai sót ở điểm Tổng
                         </span>
                       </v-col>
-                      <v-col cols="12" sm="12" md="6" v-if="actionAdmin">
+                      <v-col cols="12" sm="12" md="6" v-if="isAdmin">
                         <v-btn block color="warning" dark class="mb-2" @click="subtractTotal">Trừ Tổng (-1)</v-btn>
                       </v-col>
-                      <v-col cols="12" sm="12" md="6" v-if="actionAdmin">
+                      <v-col cols="12" sm="12" md="6" v-if="isAdmin">
                         <v-btn block color="primary" dark class="mb-2" @click="plusTotal">Cộng Tổng (+1)</v-btn>
                       </v-col>
                     </v-row>
@@ -106,10 +106,19 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="editItem(item)" color="warning">
+              mdi-plus-minus-variant
+            </v-icon>
+          </template>
+          <span>Cập nhật / Tích - Đổi điểm</span>
+        </v-tooltip>
+
+        <!-- <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
           mdi-plus-minus-variant
-        </v-icon>
-        <v-icon small v-if="actionAdmin" @click="deleteItem(item)" color="error">
+        </v-icon> -->
+        <v-icon small v-if="isAdmin" @click="deleteItem(item)" color="error">
           mdi-delete
         </v-icon>
       </template>
@@ -136,7 +145,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      actionAdmin: false,
+      isAdmin: false,
       pointDeducted: 0,
       snack: false,
       snackColor: "",
@@ -197,6 +206,9 @@ export default {
         content: "",
         time: "",
       },
+      userData: {
+        uid: ""
+      },
     };
   },
 
@@ -230,6 +242,7 @@ export default {
       removeBlood: "bloodstorage/removeBlood",
       getBlood: "bloodstorage/getBlood",
       addLog: "logs/addLog",
+      getAccount: "accounts/getAccount",
     }),
 
     async initialize() {
@@ -239,9 +252,15 @@ export default {
       } catch (e) {
         console.error(e);
       }
-      if (constants.adminUser.includes(this.user.data.email)) {
-        this.actionAdmin = true
+
+      this.userData.uid = this.user.data.uid
+      await this.getAccount(this.userData)
+      const account = await this.getAccount(this.userData)
+
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+        this.isAdmin = true
       }
+
       this.logItem.name = this.user.data.displayName
       this.loading = false;
     },

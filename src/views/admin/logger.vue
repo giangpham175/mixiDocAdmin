@@ -55,6 +55,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
+      isAdmin: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -84,6 +85,9 @@ export default {
           value: "time",
         },
       ],
+      userData: {
+        uid: ""
+      },
     };
   },
   computed: {
@@ -109,6 +113,7 @@ export default {
   methods: {
     ...mapActions({
       removeLog: "logs/removeLog",
+      getAccount: "accounts/getAccount",
     }),
 
     async initialize() {
@@ -118,6 +123,13 @@ export default {
       } catch (e) {
         console.error(e);
       }
+      this.userData.uid = this.user.data.uid
+      await this.getAccount(this.userData)
+      const account = await this.getAccount(this.userData)
+
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+        this.isAdmin = true
+      }
       this.loading = false;
     },
 
@@ -126,7 +138,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
 
           const data = this.logs;
           const fileName = "logs-" + currentDay + "-" + currentMonth;
@@ -147,7 +159,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
         this.loading = true;
         try {
           const data = this.logs;

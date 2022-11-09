@@ -22,7 +22,7 @@ const auth = {
     },
 
     RELOAD_USER(state, data) {
-      console.log(state, data);
+      state, data;
       return;
     },
   },

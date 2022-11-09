@@ -28,7 +28,7 @@ const accounts = {
     },
 
     RELOAD_ACCOUNT(state, data) {
-      console.log(state, data);
+      state, data;
       return;
     },
   },
@@ -69,11 +69,17 @@ const accounts = {
 
     async getAccount({ commit }, account) {
       commit("RELOAD_ACCOUNT", account);
-      const doc = await firestore()
+      let rs;
+      await firestore()
         .collection(collName)
-        .doc(account.id)
-        .get();
-      return doc;
+        .where("authUid", "==", account.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            rs = doc.data();
+          });
+        });
+      return rs;
     },
   },
 };

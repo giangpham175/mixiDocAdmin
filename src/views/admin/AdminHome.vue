@@ -40,11 +40,45 @@
     <v-footer app>
       <div class="flex text-center">
         <span class="lead text--secondary text-center">👉
-          <a href="https://discord.com/channels/977929596173426748/977929596903252034" class="text-decoration-none"
-            target="_blank">Thông Báo Bệnh Viện</a> 👈
+          <a href="https://docs.google.com/spreadsheets/d/12r6ltohx-M_SLqcxZETm93Weq-k7ljmq04naVQFMCLk/"
+            class="text-decoration-none" target="_blank">Tất Tần Tật Bệnh Viện</a> 👈
         </span>
       </div>
     </v-footer>
+
+    <v-snackbar v-model="snack" :timeout="5000" :color="snackColor">
+      {{ snackText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn v-bind="attrs" text @click="snack = false">Close</v-btn>
+      </template>
+    </v-snackbar>
+
+    <v-dialog v-model="loggerDialog" max-width="420">
+      <v-card>
+        <v-card-title class="text-h5">
+          Xem danh mục <br>
+          Lịch Sử Thao Tác ?
+        </v-card-title>
+
+        <v-card-text>
+          Xem mục này sẽ tiêu tốn tài nguyên của bạn và hệ thống, chỉ nên tra cứu mục này khi cần thiết
+          <br><br>
+          <b>Đồng ý</b> - để tiếp tục truy cập
+          <br>
+          <b>Dừng</b> - để dừng truy cập
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="loggerDialog = false">
+            Dừng
+          </v-btn>
+          <v-btn color="green darken-1" text @click="accessLogger">
+            Đồng ý
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -60,20 +94,26 @@ export default {
     drawer: null,
     menus: [
       // { path: '', title: 'Dashboard', icon: 'mdi-view-dashboard' },
-      // { path: '/sounds', title: 'Sounds', icon: 'mdi-playlist-music'},
-      // { path: '/categories', title: 'Categories', icon: 'mdi-folder-multiple' },
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
       // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
       { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-account-group' },
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
-    ]
+    ],
+    loggerDialog: false,
+    snack: false,
+    snackColor: "",
+    snackText: "",
+    userData: {
+      uid: ""
+    },
+    isAdmin: false,
+    isActive: false
   }),
   created() {
     this.dark = this.$vuetify.theme.dark
-    this.loadSounds;
-    this.loadCategories;
+    this.initialize();
   },
   computed: {
     ...mapActions({
@@ -83,6 +123,33 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      getAccount: "accounts/getAccount",
+    }),
+
+    async initialize() {
+      this.loading = true;
+      this.userData.uid = this.user.data.uid
+      await this.getAccount(this.userData)
+      const account = await this.getAccount(this.userData)
+
+      if (account?.role === "Admin") {
+        this.isAdmin = true
+      }
+
+      if (account?.status === "Active") {
+        this.isActive = true
+      }
+
+      if (!this.isActive && !constants.adminUser.includes(this.user.data.email)) {
+        if (confirm(`Tài khoản của bạn đã bị khóa, liên hệ Hanwool để xử lý.`)) {
+          this.logOut()
+        }
+      }
+
+      this.loading = false;
+    },
+
     logOut() {
       firebase
         .auth()
@@ -92,21 +159,32 @@ export default {
         });
     },
     goto(newPath) {
-      if (newPath === '/logger') {
-        if (confirm(`Xem mục này sẽ tiêu tốn tài nguyên của bạn và hệ thống, chỉ nên tra cứu mục này khi cần thiết\n\nOK để tiếp tục truy cập\nCancel để dừng truy cập`)) {
-          this.$router.push({ path: this.path + newPath }).catch(() => { });
+      if (!this.isActive && !constants.adminUser.includes(this.user.data.email)) {
+        if (confirm(`deactive`)) {
+          this.logOut()
         }
+      }
+
+      if (newPath === '/logger') {
+        this.loggerDialog = true
       } else if (newPath === '/accounts') {
-        if (!constants.adminUser.includes(this.user.data.email)) {
-          if (confirm(`Danh mục để quản lý tất cả các tài khoản của bác sĩ, bạn không có đủ quyền hạn.`)) {
-            return
-          }
-        } else {
+        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
           this.$router.push({ path: this.path + newPath }).catch(() => { });
+        } else {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = `Danh mục để quản lý tất cả các tài khoản. Bạn không có đủ quyền hạn để truy cập.`;
+
+          return
         }
       } else {
         this.$router.push({ path: this.path + newPath }).catch(() => { });
       }
+    },
+
+    accessLogger() {
+      this.$router.push({ path: this.path + '/logger' }).catch(() => { });
+      this.loggerDialog = false
     }
   },
   watch: {
