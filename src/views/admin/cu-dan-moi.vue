@@ -283,26 +283,30 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
-        this.loading = true;
-        try {
-          const data = this.newbies;
-          await data.forEach(async item => {
-            await this.removeNewbie(item)
-          })
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Xóa thông tin thành công";
-          this.loading = false;
-        } catch (e) {
-          this.loading = false;
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+          this.loading = true;
+          try {
+            const data = this.newbies;
+            await data.forEach(async item => {
+              await this.removeNewbie(item)
+            })
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Xóa thông tin thành công";
+            this.loading = false;
+          } catch (e) {
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Xóa thông tin không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Xóa thông tin không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
         }
+        this.loading = false;
+
       } else {
         this.snack = true;
         this.snackColor = "error";
@@ -322,7 +326,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
 
         if (this.editedIndex > -1) {
           this.loading = true;
@@ -383,7 +387,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
           const data = this.newbies;
           const fileName = "cu-dan-moi-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;

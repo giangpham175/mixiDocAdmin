@@ -79,6 +79,21 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="deactiveDialog" persistent max-width="320">
+      <v-card>
+        <v-card-title class="text-h5">
+          Tài khoản đang bị khóa ?
+        </v-card-title>
+        <v-card-text>Tài khoản của bạn đã bị khóa, liên hệ bác sĩ Hanwool để xử lý.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="logOut">
+            Đã hiểu
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -102,6 +117,7 @@ export default {
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
     ],
     loggerDialog: false,
+    deactiveDialog: false,
     snack: false,
     snackColor: "",
     snackText: "",
@@ -142,15 +158,16 @@ export default {
       }
 
       if (!this.isActive && !constants.adminUser.includes(this.user.data.email)) {
-        if (confirm(`Tài khoản của bạn đã bị khóa, liên hệ Hanwool để xử lý.`)) {
-          this.logOut()
-        }
+        this.deactiveDialog = true
       }
 
       this.loading = false;
     },
 
     logOut() {
+      if (this.deactiveDialog) {
+        this.deactiveDialog = false
+      }
       firebase
         .auth()
         .signOut()
@@ -160,9 +177,7 @@ export default {
     },
     goto(newPath) {
       if (!this.isActive && !constants.adminUser.includes(this.user.data.email)) {
-        if (confirm(`deactive`)) {
-          this.logOut()
-        }
+        this.deactiveDialog = true
       }
 
       if (newPath === '/logger') {

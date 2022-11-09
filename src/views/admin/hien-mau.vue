@@ -123,7 +123,7 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="addOldData">Add new data</v-btn>
+        <v-btn color="primary" @click="addOldData">Add Data</v-btn>
       </template>
     </v-data-table>
 
@@ -517,7 +517,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
           const data = this.bloodstorage;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
@@ -538,11 +538,10 @@ export default {
     // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
     async resetPoint() {
       this.loading = true;
-      if (constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
         this.loading = true;
         if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
           try {
-            // if (constants.adminUser.includes(this.user.data.email)) {
             const data = this.bloodstorage;
             await data.forEach(async item => {
               item.accumulation = 0

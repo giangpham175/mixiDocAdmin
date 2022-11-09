@@ -159,26 +159,29 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
-        this.loading = true;
-        try {
-          const data = this.logs;
-          await data.forEach(async item => {
-            await this.removeLog(item)
-          })
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Xóa thông tin thành công";
-          this.loading = false;
-        } catch (e) {
-          this.loading = false;
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+          this.loading = true;
+          try {
+            const data = this.logs;
+            await data.forEach(async item => {
+              await this.removeLog(item)
+            })
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Xóa thông tin thành công";
+            this.loading = false;
+          } catch (e) {
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Xóa thông tin không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Xóa thông tin không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
         }
+        this.loading = false;
       } else {
         this.snack = true;
         this.snackColor = "error";

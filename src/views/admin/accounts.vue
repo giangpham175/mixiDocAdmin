@@ -117,7 +117,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      roles: ['Doctor', 'Admin'],
+      roles: ['Doctor', 'Admin', 'Intern'],
       status: ['Active', 'Deactive'],
       isAdmin: false,
       snack: false,
@@ -272,7 +272,8 @@ export default {
       if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
         this.loading = true;
         try {
-          this.dataSignup.email = this.editedItem.email
+          this.editedItem.email = this.editedItem.email.toLowerCase()
+          this.dataSignup.email = this.editedItem.email.toLowerCase()
           this.dataSignup.fullName = this.editedItem.fullName
 
           const signupResult = await this.signUp(this.dataSignup)

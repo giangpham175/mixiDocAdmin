@@ -87,7 +87,7 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <v-btn color="primary" @click="addOldData">Add Data</v-btn>
       </template>
     </v-data-table>
 
@@ -144,16 +144,16 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
-        food: 0,
-        socola: 0,
+        food: "0",
+        socola: "0",
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
       },
       defaultItem: {
         name: "",
-        food: 0,
-        socola: 0,
+        food: "0",
+        socola: "0",
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
@@ -287,10 +287,16 @@ export default {
         this.loading = true;
         const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
+        const foodCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.food)
+        const foodAmount = `${this.editedItem.food.replace(/\s+/g, '').slice(foodCountRemoveFirstZero, this.editedItem.food.length)}`
+
+        const socolaCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.socola)
+        const socolaAmount = `${this.editedItem.socola.replace(/\s+/g, '').slice(socolaCountRemoveFirstZero, this.editedItem.socola.length)}`
+
         this.editedItem.time = nowTime.toLocaleString()
         this.defaultItem.time = nowTime.toLocaleString()
-        this.editedItem.reason = `${this.editedItem.food} Bánh/Nước + ${this.editedItem.socola} Socola`
-        this.editedItem.amount = this.editedItem.food * 50 + this.editedItem.socola * 200
+        this.editedItem.reason = `${foodAmount} Bánh/Nước + ${socolaAmount} Socola`
+        this.editedItem.amount = foodAmount * 50 + socolaAmount * 200
         this.loading = true;
         try {
           await this.addExpense(this.editedItem);
@@ -313,7 +319,10 @@ export default {
           this.snackText = "Thêm thông tin không thành công";
 
           console.error(e);
+          this.loading = false;
         }
+        this.loading = false;
+
       } else {
         if (confirm("Trạng thái Sao Kê hiện đang bị khóa. Vui lòng chờ Bác sĩ Hanwool kiểm tra")) {
           location.reload();
@@ -381,31 +390,50 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email) && confirm("Chắc chắn là XÓA HẾT đó nha?")) {
-        this.loading = true;
-        try {
-          const data = this.expenses;
-          await data.forEach(async item => {
-            await this.removeExpense(item)
-          })
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Xóa thông tin thành công";
-          this.loading = false;
-        } catch (e) {
-          this.loading = false;
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
+          this.loading = true;
+          try {
+            const data = this.expenses;
+            await data.forEach(async item => {
+              await this.removeExpense(item)
+            })
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Xóa thông tin thành công";
+            this.loading = false;
+          } catch (e) {
+            this.loading = false;
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Xóa thông tin không thành công";
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Xóa thông tin không thành công";
 
-          console.error(e);
+            console.error(e);
+          }
         }
+
       } else {
         this.snack = true;
         this.snackColor = "error";
         this.snackText = "Bạn không có quyền xóa";
         this.loading = false;
+      }
+    },
+
+    async addOldData() {
+      const data = null
+      if (data) {
+        try {
+          data.forEach(async e => {
+            await this.addExpense(e);
+          })
+        } catch (e) {
+          this.loading = false;
+          console.error(e);
+        }
+      } else {
+        console.log('import error')
       }
     },
   },
