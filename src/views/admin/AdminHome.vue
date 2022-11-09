@@ -125,6 +125,7 @@ export default {
       uid: ""
     },
     isAdmin: false,
+    isIntern: false,
     isActive: false
   }),
   created() {
@@ -153,6 +154,10 @@ export default {
         this.isAdmin = true
       }
 
+      if (account?.role === "Intern") {
+        this.isIntern = true
+      }
+
       if (account?.status === "Active") {
         this.isActive = true
       }
@@ -178,6 +183,16 @@ export default {
     goto(newPath) {
       if (!this.isActive && !constants.adminUser.includes(this.user.data.email)) {
         this.deactiveDialog = true
+      }
+
+      if (newPath === '/khoan-chi' || newPath === '/cu-dan-moi' || newPath === '/logger') {
+        if (this.isIntern) {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu.`;
+
+          return
+        }
       }
 
       if (newPath === '/logger') {
