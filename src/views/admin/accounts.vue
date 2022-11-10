@@ -88,6 +88,14 @@
           </template>
           <span>Active / Deactive</span>
         </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" @click="upgradeDoctor(item)" color="#69F0AE">
+              mdi-account-arrow-up
+            </v-icon>
+          </template>
+          <span>Upgrade Doctor</span>
+        </v-tooltip>
 
         <!-- <v-icon medium v-if="isAdmin" class="mr-2" @click="resetPassword(item)" color="warning">
           mdi-form-textbox-password
@@ -117,7 +125,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      roles: ['Doctor', 'Admin', 'Intern'],
+      roles: ['Doctor', 'Intern', 'Admin'],
       status: ['Active', 'Deactive'],
       isAdmin: false,
       snack: false,
@@ -168,7 +176,7 @@ export default {
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
       dataSignup: {
         email: "",
-        password: "az*qJA2dn^2)4*9x",
+        password: "112113",
         fullName: "",
       },
       resetPasswordInfo: {
@@ -303,6 +311,47 @@ export default {
         this.snackText = "Bạn không có quyền đăng ký mới";
         this.loading = false;
       }
+    },
+
+    async upgradeDoctor(item) {
+      this.loading = true;
+      this.editedIndex = this.accounts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+
+      if (item.role === "Intern") {
+        if (confirm(`Nâng chức vụ hệ thống của ${item.fullName} thành Doctor?`)) {
+          try {
+            this.editedItem.role = "Doctor"
+            await this.updateAccount({
+              index: this.editedIndex,
+              account: this.editedItem,
+            });
+
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Nâng chức vụ hệ thống của người này thành công";
+            this.loading = false;
+          } catch (e) {
+            this.loading = false;
+
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Nâng chức vụ hệ thống của người này không thành công";
+
+            console.error(e);
+          }
+        }
+        this.loading = false;
+        return
+      } else {
+        this.loading = false;
+
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Tài khoản đang có chức vụ Doctor";
+      }
+
+      this.loading = false;
     },
 
     async changeStatus(item) {

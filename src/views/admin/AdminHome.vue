@@ -185,7 +185,7 @@ export default {
         this.deactiveDialog = true
       }
 
-      if (newPath === '/khoan-chi' || newPath === '/cu-dan-moi' || newPath === '/logger') {
+      if (newPath !== '/hien-mau') {
         if (this.isIntern) {
           this.snack = true;
           this.snackColor = "error";
