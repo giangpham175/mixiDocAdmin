@@ -34,7 +34,7 @@
                           label="Vai trò trên hệ thống"></v-select>
                       </v-col>
                       <v-col class="d-flex" cols="6" sm="6" md="6">
-                        <v-select :items="status" :disabled="loading" :rules="fieldRule" v-model="editedItem.status"
+                        <v-select :items="status" disabled :rules="fieldRule" v-model="editedItem.status"
                           label="Trạng thái hoạt động"></v-select>
                       </v-col>
                     </v-row>
@@ -80,14 +80,14 @@
           </template>
           <span>Reset Password</span>
         </v-tooltip>
-        <v-tooltip top>
+        <!-- <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" @click="changeStatus(item)" color="primary">
               mdi-account-switch-outline
             </v-icon>
           </template>
           <span>Active / Deactive</span>
-        </v-tooltip>
+        </v-tooltip> -->
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" @click="upgradeDoctor(item)" color="#69F0AE">
@@ -97,12 +97,6 @@
           <span>Upgrade Doctor</span>
         </v-tooltip>
 
-        <!-- <v-icon medium v-if="isAdmin" class="mr-2" @click="resetPassword(item)" color="warning">
-          mdi-form-textbox-password
-        </v-icon>
-        <v-icon medium v-if="isAdmin" @click="changeStatus(item)" color="primary">
-          mdi-account-switch-outline
-        </v-icon> -->
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="addOldData">Add new data</v-btn>
@@ -125,7 +119,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      roles: ['Doctor', 'Intern', 'Admin'],
+      roles: ['Intern', 'Doctor', 'Admin'],
       status: ['Active', 'Deactive'],
       isAdmin: false,
       snack: false,
@@ -151,11 +145,11 @@ export default {
           sortable: true,
           value: "role",
         },
-        {
-          text: "Trạng thái hoạt động",
-          sortable: true,
-          value: "status",
-        },
+        // {
+        //   text: "Trạng thái hoạt động",
+        //   sortable: true,
+        //   value: "status",
+        // },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
       editedIndex: -1,

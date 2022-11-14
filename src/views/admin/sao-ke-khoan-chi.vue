@@ -87,7 +87,7 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="addOldData">Add Data</v-btn>
+        <v-btn v-if="isAdmin" color="primary" @click="addOldData">Add Data</v-btn>
       </template>
     </v-data-table>
 
@@ -288,10 +288,13 @@ export default {
         const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
         const foodCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.food)
-        const foodAmount = `${this.editedItem.food.replace(/\s+/g, '').slice(foodCountRemoveFirstZero, this.editedItem.food.length)}`
+        let foodAmount = `${this.editedItem.food.replace(/\s+/g, '').slice(foodCountRemoveFirstZero, this.editedItem.food.length)}`
 
         const socolaCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.socola)
-        const socolaAmount = `${this.editedItem.socola.replace(/\s+/g, '').slice(socolaCountRemoveFirstZero, this.editedItem.socola.length)}`
+        let socolaAmount = `${this.editedItem.socola.replace(/\s+/g, '').slice(socolaCountRemoveFirstZero, this.editedItem.socola.length)}`
+
+        foodAmount = Number(foodAmount)
+        socolaAmount = Number(socolaAmount)
 
         this.editedItem.time = nowTime.toLocaleString()
         this.defaultItem.time = nowTime.toLocaleString()
