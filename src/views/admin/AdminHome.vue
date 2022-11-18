@@ -112,6 +112,7 @@ export default {
       { path: '/hien-mau', title: 'Hiến Máu', icon: 'mdi-blood-bag' },
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
       // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
+      { path: '/vouchers', title: 'Voucher', icon: 'mdi-ticket-percent' },
       { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-account-group' },
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },

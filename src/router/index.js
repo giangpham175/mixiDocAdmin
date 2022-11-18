@@ -13,6 +13,7 @@ import SaoKeCanhSat from "../views/admin/sao-ke-canh-sat";
 import CuDanMoi from "../views/admin/cu-dan-moi";
 import Logger from "../views/admin/logger";
 import Accounts from "../views/admin/accounts";
+import Vouchers from "../views/admin/vouchers";
 
 Vue.use(VueRouter);
 
@@ -35,6 +36,7 @@ const routes = [
       { path: "cu-dan-moi", component: CuDanMoi },
       { path: "logger", component: Logger },
       { path: "accounts", component: Accounts },
+      { path: "vouchers", component: Vouchers },
     ],
     meta: {
       requiresAuth: true,

@@ -8,6 +8,7 @@ import policeStation from "./modules/ho-so-canh-sat";
 import newbies from "./modules/cu-dan-moi";
 import logs from "./modules/logger";
 import accounts from "./modules/accounts";
+import vouchers from "./modules/vouchers";
 
 Vue.use(Vuex);
 
@@ -21,5 +22,6 @@ export default new Vuex.Store({
     newbies,
     logs,
     accounts,
+    vouchers,
   },
 });
