@@ -171,7 +171,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      doctorIds: ['VUU64294', 'PHA09570', 'ZBW94170'],
+      doctorIds: ['VUU64294', 'PHA09570'],
       contentPromotions: ['Miễn phí cấp cứu', 'Miễn phí chữa trị truyền máu thẳng'],
       isAdmin: false,
       snack: false,
@@ -436,6 +436,11 @@ export default {
     async useVoucher() {
       if (!this.$refs.voucherDialogForm.validate()) return;
 
+      // remove this condition in the next udpate
+      if (this.editedItem.codeAuthentication === 'ZBW94170') {
+        this.editedItem.codeAuthentication = 'PHA09570'
+      }
+
       if (this.editedItem.codeAuthentication === this.editedItem.doctorId) {
         if (this.editedItem.quantity > 0) {
           this.loading = true;
@@ -450,6 +455,11 @@ export default {
             index: this.editedIndex,
             voucher: this.editedItem,
           });
+
+          this.logItem.time = nowTime.toLocaleString()
+          this.logItem.name = this.user.data.displayName
+          this.logItem.content = `Sử dụng cho: ${this.editedItem.name}, Voucher còn lại ${this.editedItem.quantity} lần`
+          await this.addLog(this.logItem);
 
           this.loading = false;
           this.close();
