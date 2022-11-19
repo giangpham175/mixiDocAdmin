@@ -109,9 +109,9 @@
           <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="exportVoucher" color="#2E7D32">
+          <!-- <v-btn text icon class="mb-2 ml-2" @click="exportVoucher" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
-          </v-btn>
+          </v-btn> -->
         </v-toolbar>
       </template>
 

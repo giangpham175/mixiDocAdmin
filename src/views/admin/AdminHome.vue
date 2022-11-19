@@ -117,6 +117,7 @@ export default {
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
     ],
+    internAccess: ['/hien-mau', '/vouchers'],
     loggerDialog: false,
     // deactiveDialog: false,
     snack: false,
@@ -186,11 +187,13 @@ export default {
       //   this.deactiveDialog = true
       // }
 
-      if (newPath !== '/hien-mau') {
-        if (this.isIntern) {
+      if (this.isIntern) {
+        if (this.internAccess.includes(newPath)) {
+          this.$router.push({ path: this.path + newPath }).catch(() => { });
+        } else {
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu.`;
+          this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu và danh mục Voucher.`;
 
           return
         }
