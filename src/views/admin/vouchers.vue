@@ -79,7 +79,7 @@
 
                       <v-col cols="12" sm="12" md="12">
                         <v-text-field autofocus :disabled="loading" :rules="fieldRule"
-                          v-model="validatedItem.codePromotionInput" label="Nhập mã ưu đãi">
+                          v-model="editedItem.codePromotionInput" label="Nhập mã ưu đãi">
                         </v-text-field>
                       </v-col>
 
@@ -170,8 +170,8 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      doctorIds: ['VUU64294', 'PHA09570'],
-      contentPromotions: ['Miễn phí chữa trị', 'Miễn phí cấp cứu', 'Miễn viện phí'],
+      doctorIds: ['VUU64294', 'PHA09570', 'ZBW94170'],
+      contentPromotions: ['Miễn phí chữa trị', 'Miễn phí chữa trị truyền máu thẳng'],
       isAdmin: false,
       snack: false,
       snackColor: "",
@@ -205,7 +205,6 @@ export default {
         { text: "Thao tác", value: "actions", sortable: false },
       ],
       editedIndex: -1,
-      validatedIndex: -1,
       editedItem: {
         name: "",
         contentPromotion: "",
@@ -214,6 +213,7 @@ export default {
         doctorId: "",
         timeUsed: "",
         doctorUsed: "",
+        codePromotionInput: "",
       },
       validatedItem: {
         codePromotionInput: "",
@@ -228,6 +228,7 @@ export default {
         doctorId: "",
         timeUsed: "",
         doctorUsed: "",
+        codePromotionInput: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
       logItem: {
@@ -330,15 +331,15 @@ export default {
       const getNewData = await this.getVoucher(item);
       const newData = getNewData.data()
 
-      this.validatedIndex = this.vouchers.indexOf(item);
-      this.validatedItem = Object.assign({}, item);
+      this.editedIndex = this.vouchers.indexOf(item);
+      this.editedItem = Object.assign({}, item);
 
       if (Number(item.quantity) !== Number(newData.quantity)) {
-        this.validatedItem.quantity = Number(newData.quantity)
+        this.editedItem.quantity = Number(newData.quantity)
 
         await this.updateVoucher({
           index: this.editedIndex,
-          voucher: this.validatedItem,
+          voucher: this.editedItem,
         });
 
         if (Number(newData.quantity) === 0) {
@@ -428,34 +429,26 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.validatedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.validatedIndex = -1;
       });
     },
 
     async useVoucher() {
       if (!this.$refs.voucherDialogForm.validate()) return;
 
-      if (this.validatedItem.codePromotionInput === this.validatedItem.codePromotion) {
-        if (this.validatedItem.quantity > 0) {
+      if (this.editedItem.codePromotionInput === this.editedItem.codePromotion) {
+        if (this.editedItem.quantity > 0) {
           this.loading = true;
 
           const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
           this.editedItem.timeUsed = nowTime.toLocaleString()
           this.editedItem.doctorUsed = this.user.data.displayName
-          this.editedItem.quantity = Number(this.validatedItem.quantity) - 1
+          this.editedItem.quantity = Number(this.editedItem.quantity) - 1
+          this.editedItem.codePromotionInput = ''
 
-          this.editedItem.name = this.validatedItem.name
-          this.editedItem.contentPromotion = this.validatedItem.contentPromotion
-          this.editedItem.codePromotion = this.validatedItem.codePromotion
-          this.editedItem.doctorId = this.validatedItem.doctorId
-
-          console.log('🔥🔥🔥🔥🔥')
-          console.log(this.editedItem)
-
-          // await this.updateVoucher({
-          //   index: this.editedIndex,
-          //   voucher: this.editedItem,
-          // });
+          await this.updateVoucher({
+            index: this.editedIndex,
+            voucher: this.editedItem,
+          });
 
           this.loading = false;
           this.close();
