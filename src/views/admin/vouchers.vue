@@ -171,7 +171,7 @@ export default {
   data() {
     return {
       doctorIds: ['VUU64294', 'PHA09570', 'ZBW94170'],
-      contentPromotions: ['Miễn phí chữa trị', 'Miễn phí chữa trị truyền máu thẳng'],
+      contentPromotions: ['Miễn phí cấp cứu', 'Miễn phí chữa trị truyền máu thẳng'],
       isAdmin: false,
       snack: false,
       snackColor: "",
