@@ -37,7 +37,7 @@
                       </v-col>
                       <v-col class="d-flex" cols="5" sm="5" md="5">
                         <v-select :items="doctorIds" :disabled="loading" :rules="fieldRule"
-                          v-model="editedItem.doctorId" label="Căn cước xác thực"></v-select>
+                          v-model="editedItem.doctorId" label="Mã xác thực"></v-select>
                       </v-col>
                       <v-col class="d-flex" cols="12" sm="12" md="12">
                         <v-select :items="contentPromotions" :disabled="loading" :rules="fieldRule"
@@ -79,7 +79,8 @@
 
                       <v-col cols="12" sm="12" md="12">
                         <v-text-field autofocus :disabled="loading" :rules="fieldRule"
-                          v-model="editedItem.codePromotionInput" label="Nhập mã ưu đãi">
+                          v-model="editedItem.codeAuthentication" @keyup="uppercase"
+                          label="Nhập mã xác thực (VD: PPP01111)">
                         </v-text-field>
                       </v-col>
 
@@ -188,9 +189,9 @@ export default {
           value: "name",
         },
         {
-          text: "Nội dung ưu đãi",
+          text: "Mã ưu đãi",
           sortable: true,
-          value: "contentPromotion",
+          value: "codePromotion",
         },
         {
           text: "Số lượng",
@@ -198,9 +199,9 @@ export default {
           value: "quantity",
         },
         {
-          text: "Số căn cước xác thực",
+          text: "Nội dung ưu đãi",
           sortable: true,
-          value: "doctorId",
+          value: "contentPromotion",
         },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
@@ -213,10 +214,10 @@ export default {
         doctorId: "",
         timeUsed: "",
         doctorUsed: "",
-        codePromotionInput: "",
+        codeAuthentication: "",
       },
       validatedItem: {
-        codePromotionInput: "",
+        codeAuthentication: "",
         timeUsed: "",
         doctorUsed: "",
       },
@@ -228,7 +229,7 @@ export default {
         doctorId: "",
         timeUsed: "",
         doctorUsed: "",
-        codePromotionInput: "",
+        codeAuthentication: "",
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
       logItem: {
@@ -435,7 +436,7 @@ export default {
     async useVoucher() {
       if (!this.$refs.voucherDialogForm.validate()) return;
 
-      if (this.editedItem.codePromotionInput === this.editedItem.codePromotion) {
+      if (this.editedItem.codeAuthentication === this.editedItem.doctorId) {
         if (this.editedItem.quantity > 0) {
           this.loading = true;
 
@@ -443,7 +444,7 @@ export default {
           this.editedItem.timeUsed = nowTime.toLocaleString()
           this.editedItem.doctorUsed = this.user.data.displayName
           this.editedItem.quantity = Number(this.editedItem.quantity) - 1
-          this.editedItem.codePromotionInput = ''
+          this.editedItem.codeAuthentication = ''
 
           await this.updateVoucher({
             index: this.editedIndex,
@@ -552,49 +553,49 @@ export default {
       this.loading = false;
     },
 
-    async useService(item) {
-      this.loading = true;
-      this.editedIndex = this.vouchers.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+    // async useService(item) {
+    //   this.loading = true;
+    //   this.editedIndex = this.vouchers.indexOf(item);
+    //   this.editedItem = Object.assign({}, item);
 
-      if (!this.editedItem.doctorUsed) {
-        this.editedItem.doctorUsed = this.user.data.displayName
+    //   if (!this.editedItem.doctorUsed) {
+    //     this.editedItem.doctorUsed = this.user.data.displayName
 
-        const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
-        this.editedItem.timeUsed = nowTime.toLocaleString()
+    //     const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
+    //     this.editedItem.timeUsed = nowTime.toLocaleString()
 
-        if (confirm(`Đồng ý dùng voucher cho cư dân: ${this.editedItem.name} ?`)) {
-          try {
-            await this.updateVoucher({
-              index: this.editedIndex,
-              voucher: this.editedItem,
-            });
+    //     if (confirm(`Đồng ý dùng voucher cho cư dân: ${this.editedItem.name} ?`)) {
+    //       try {
+    //         await this.updateVoucher({
+    //           index: this.editedIndex,
+    //           voucher: this.editedItem,
+    //         });
 
-            this.logItem.time = this.editedItem.timeUsed
-            this.logItem.content = `Dùng voucher cho cư dân: ${this.editedItem.name}`
-            // await this.addLog(this.logItem);
+    //         this.logItem.time = this.editedItem.timeUsed
+    //         this.logItem.content = `Dùng voucher cho cư dân: ${this.editedItem.name}`
+    //         // await this.addLog(this.logItem);
 
-            this.snack = true;
-            this.snackColor = "success";
-            this.snackText = "Dùng voucher thành công";
-            this.loading = false;
-          } catch (e) {
-            this.loading = false;
+    //         this.snack = true;
+    //         this.snackColor = "success";
+    //         this.snackText = "Dùng voucher thành công";
+    //         this.loading = false;
+    //       } catch (e) {
+    //         this.loading = false;
 
-            this.snack = true;
-            this.snackColor = "error";
-            this.snackText = "Dùng voucher không thành công";
+    //         this.snack = true;
+    //         this.snackColor = "error";
+    //         this.snackText = "Dùng voucher không thành công";
 
-            console.error(e);
-          }
-        }
-      } else {
-        this.snack = true;
-        this.snackColor = "error";
-        this.snackText = "Dùng voucher không thành công";
-      }
-      this.loading = false;
-    },
+    //         console.error(e);
+    //       }
+    //     }
+    //   } else {
+    //     this.snack = true;
+    //     this.snackColor = "error";
+    //     this.snackText = "Dùng voucher không thành công";
+    //   }
+    //   this.loading = false;
+    // },
 
     async addOldData() {
       const data = null
@@ -610,6 +611,10 @@ export default {
       } else {
         console.log('import error')
       }
+    },
+
+    uppercase() {
+      this.editedItem.codeAuthentication = this.editedItem.codeAuthentication.toUpperCase();
     },
   },
 
