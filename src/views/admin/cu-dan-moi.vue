@@ -58,10 +58,10 @@
             </v-card>
           </v-dialog>
 
-          <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="exportNewbie" color="#2E7D32">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="exportNewbie" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>
@@ -93,9 +93,6 @@
           <span>Xác nhận hỗ trợ</span>
         </v-tooltip>
 
-        <!-- <v-icon medium class="mr-2" @click="tickSupported(item)" color="warning">
-          mdi-sticker-check
-        </v-icon> -->
         <v-icon medium v-if="isAdmin" @click="editItem(item)" color="primary">
           mdi-pencil
         </v-icon>

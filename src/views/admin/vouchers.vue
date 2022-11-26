@@ -106,7 +106,7 @@
             </v-card>
           </v-dialog>
 
-          <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
           <!-- <v-btn text icon class="mb-2 ml-2" @click="exportVoucher" color="#2E7D32">
@@ -172,7 +172,7 @@ export default {
   data() {
     return {
       doctorIds: ['VUU64294', 'PHA09570'],
-      contentPromotions: ['Miễn phí cấp cứu', 'Miễn phí chữa trị truyền máu thẳng (không cần quét MRI)'],
+      contentPromotions: ['Miễn phí cấp cứu', 'Miễn viện phí', 'Miễn phí chữa trị truyền máu thẳng (không cần quét MRI)'],
       isAdmin: false,
       snack: false,
       snackColor: "",
@@ -536,7 +536,7 @@ export default {
         this.close()
         this.snack = true;
         this.snackColor = "error";
-        this.snackText = "Bạn không có quyền thêm người mới";
+        this.snackText = "Bạn không có quyền thêm thông tin mới";
         this.loading = false;
       }
     },
@@ -562,50 +562,6 @@ export default {
       }
       this.loading = false;
     },
-
-    // async useService(item) {
-    //   this.loading = true;
-    //   this.editedIndex = this.vouchers.indexOf(item);
-    //   this.editedItem = Object.assign({}, item);
-
-    //   if (!this.editedItem.doctorUsed) {
-    //     this.editedItem.doctorUsed = this.user.data.displayName
-
-    //     const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
-    //     this.editedItem.timeUsed = nowTime.toLocaleString()
-
-    //     if (confirm(`Đồng ý dùng voucher cho cư dân: ${this.editedItem.name} ?`)) {
-    //       try {
-    //         await this.updateVoucher({
-    //           index: this.editedIndex,
-    //           voucher: this.editedItem,
-    //         });
-
-    //         this.logItem.time = this.editedItem.timeUsed
-    //         this.logItem.content = `Dùng voucher cho cư dân: ${this.editedItem.name}`
-    //         // await this.addLog(this.logItem);
-
-    //         this.snack = true;
-    //         this.snackColor = "success";
-    //         this.snackText = "Dùng voucher thành công";
-    //         this.loading = false;
-    //       } catch (e) {
-    //         this.loading = false;
-
-    //         this.snack = true;
-    //         this.snackColor = "error";
-    //         this.snackText = "Dùng voucher không thành công";
-
-    //         console.error(e);
-    //       }
-    //     }
-    //   } else {
-    //     this.snack = true;
-    //     this.snackColor = "error";
-    //     this.snackText = "Dùng voucher không thành công";
-    //   }
-    //   this.loading = false;
-    // },
 
     async addOldData() {
       const data = null

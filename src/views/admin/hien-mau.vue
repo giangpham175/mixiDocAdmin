@@ -80,10 +80,10 @@
             </v-card>
           </v-dialog>
 
-          <v-btn text icon class="mb-2 ml-2" @click="resetPoint" color="error">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="resetPoint" color="error">
             <v-icon>mdi-file-restore-outline</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="exportBlood" color="#2E7D32">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="exportBlood" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>

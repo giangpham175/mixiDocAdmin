@@ -14,6 +14,7 @@ import CuDanMoi from "../views/admin/cu-dan-moi";
 import Logger from "../views/admin/logger";
 import Accounts from "../views/admin/accounts";
 import Vouchers from "../views/admin/vouchers";
+import BaoHiemYTe from "../views/admin/bao-hiem-y-te";
 
 Vue.use(VueRouter);
 
@@ -37,6 +38,7 @@ const routes = [
       { path: "logger", component: Logger },
       { path: "accounts", component: Accounts },
       { path: "vouchers", component: Vouchers },
+      { path: "bao-hiem-y-te", component: BaoHiemYTe },
     ],
     meta: {
       requiresAuth: true,

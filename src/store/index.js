@@ -9,6 +9,7 @@ import newbies from "./modules/cu-dan-moi";
 import logs from "./modules/logger";
 import accounts from "./modules/accounts";
 import vouchers from "./modules/vouchers";
+import healthInsuranceStorage from "./modules/bao-hiem-y-te";
 
 Vue.use(Vuex);
 
@@ -23,5 +24,6 @@ export default new Vuex.Store({
     logs,
     accounts,
     vouchers,
+    healthInsuranceStorage,
   },
 });

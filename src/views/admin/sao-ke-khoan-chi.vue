@@ -56,10 +56,10 @@
           <v-btn v-else text icon class="mb-2 ml-2" @click="unlock" color="error">
             <v-icon>mdi-lock</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="deleteAll" color="error">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <v-btn text icon class="mb-2 ml-2" @click="exportExpenses" color="#2E7D32">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="exportExpenses" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>

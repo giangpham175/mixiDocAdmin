@@ -31,3 +31,27 @@ export function changeTimeZone(date, timeZone) {
     ].join(":");
   return dformat;
 }
+
+export function getTimeGMT7(date, timeZone) {
+  if (typeof date === "string") {
+    return new Date(
+      new Date(date).toLocaleString("en-US", {
+        timeZone,
+      })
+    );
+  }
+
+  const time = new Date(
+    date.toLocaleString("en-US", {
+      timeZone,
+    })
+  );
+
+  const dExport = {
+    year: time.getFullYear(),
+    month: Number(padTo2Digits(time.getMonth() + 1)),
+    date: Number(padTo2Digits(time.getDate())),
+  };
+
+  return dExport;
+}

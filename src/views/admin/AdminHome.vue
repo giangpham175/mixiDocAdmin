@@ -113,6 +113,7 @@ export default {
       { path: '/khoan-chi', title: 'Sao Kê Khoản Chi', icon: 'mdi-cash-multiple' },
       // { path: '/canh-sat', title: 'Sao Kê Cảnh Sát', icon: 'mdi-police-badge' },
       { path: '/vouchers', title: 'Voucher', icon: 'mdi-ticket-percent' },
+      { path: '/bao-hiem-y-te', title: 'Bảo Hiểm Y Tế', icon: 'mdi-shield-plus' },
       { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-account-group' },
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
@@ -207,7 +208,7 @@ export default {
         } else {
           this.snack = true;
           this.snackColor = "error";
-          this.snackText = `Danh mục để quản lý tất cả các tài khoản. Bạn không có đủ quyền hạn để truy cập.`;
+          this.snackText = `Danh mục dành cho Admin. Bạn không có đủ quyền hạn để truy cập.`;
 
           return
         }
