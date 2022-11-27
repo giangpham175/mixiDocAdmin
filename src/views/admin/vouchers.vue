@@ -172,7 +172,7 @@ export default {
   data() {
     return {
       doctorIds: ['VUU64294', 'PHA09570'],
-      contentPromotions: ['Miễn phí cấp cứu', 'Miễn viện phí', 'Miễn phí chữa trị truyền máu thẳng (không cần quét MRI)'],
+      contentPromotions: ['Miễn viện phí', 'Miễn phí chữa trị truyền máu thẳng (không cần quét MRI)'],
       isAdmin: false,
       snack: false,
       snackColor: "",

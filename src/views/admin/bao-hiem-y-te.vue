@@ -357,7 +357,7 @@ export default {
 
     async deleteItem(item) {
       this.loading = true;
-      if (this.user.data.displayName === item.name) {
+      if (this.user.data.displayName === item.doctorCreated) {
         if (confirm("Chắc chắn là XÓA nha?")) {
           this.loading = true;
           try {

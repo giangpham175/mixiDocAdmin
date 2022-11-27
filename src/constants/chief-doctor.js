@@ -6,4 +6,6 @@ export const chiefDoctor = [
   "phuonglinh01051@gmail.com",
   "sydneypham115@gmail.com",
   "darkmagicoverlight@gmail.com",
+  "tongthimyphat@gmail.com",
+  "mynguyenngoc12@gmail.com",
 ];
