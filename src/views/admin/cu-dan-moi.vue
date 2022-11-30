@@ -87,7 +87,7 @@
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="tickSupported(item)" color="warning">
-              mdi-sticker-check
+              mdi-charity
             </v-icon>
           </template>
           <span>Xác nhận hỗ trợ</span>
