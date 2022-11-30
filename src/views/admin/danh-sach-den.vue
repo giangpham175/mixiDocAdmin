@@ -403,7 +403,7 @@ export default {
     },
 
     async save() {
-      if (!this.$refs.dialogForm.validate()) return;
+      // if (!this.$refs.dialogForm.validate()) return;
 
       if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
         // if (confirm("Chắc chắn về tổng tiền nợ?")) {}
