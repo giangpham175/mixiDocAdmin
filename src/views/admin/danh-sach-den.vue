@@ -25,7 +25,7 @@
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      
+
                       <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.debtInvoiceNumber"
                           label="Tổng số hóa đơn nợ" type="number">
@@ -69,7 +69,7 @@
                         <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                     
+
                       <v-col cols="6" sm="6" md="6">
                         <v-text-field disabled v-model="editedItem.debtInvoiceNumber" label="Tổng số hóa đơn nợ"
                           type="number">
@@ -136,7 +136,8 @@
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="validateItem(item)" color="warning">
+            <v-icon v-if="isManageBlacklist || isAdmin" dark v-bind="attrs" v-on="on" medium class="mr-2"
+              @click="validateItem(item)" color="warning">
               mdi-pencil
             </v-icon>
           </template>
@@ -174,6 +175,7 @@ export default {
   data() {
     return {
       allStatus: ['Đang trong Blacklist', 'Đang chờ gỡ Blacklist', 'Đang bị Ban'],
+      isManageBlacklist: false,
 
       isAdmin: false,
       snack: false,
@@ -274,8 +276,10 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)
+        || constants.manageBlacklist.includes(this.user.data.email)) {
         this.isAdmin = true
+        this.isManageBlacklist = true
       }
 
       try {
