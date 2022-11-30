@@ -1,4 +1,4 @@
-// this.user.data.email === 'mynguyenngoc22@gmail.com'
+// danh sach bac si truong
 export const chiefDoctor = [
   "gp@mixi.com",
   "mynguyenngoc22@gmail.com",

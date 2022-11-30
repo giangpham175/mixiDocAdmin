@@ -21,22 +21,20 @@
                 <v-container>
                   <v-form v-bind:disabled="loading" lazy-validation ref="dialogForm">
                     <v-row>
-                      <v-col cols="7" sm="7" md="7">
+                      <v-col cols="12" sm="12" md="12">
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="5" sm="5" md="5">
-                        <v-select :items="genders" :disabled="loading" :rules="fieldRule" v-model="editedItem.gender"
-                          label="Giới Tính"></v-select>
-                      </v-col>
-                      <v-col cols="7" sm="7" md="7">
-                        <v-text-field :disabled="loading" v-model="editedItem.totalPrice" label="Tổng tiền nợ"
-                          type="number">
-                        </v-text-field>
-                      </v-col>
-                      <v-col cols="5" sm="5" md="5">
+                      
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.debtInvoiceNumber"
                           label="Tổng số hóa đơn nợ" type="number">
+                        </v-text-field>
+                      </v-col>
+
+                      <v-col cols="6" sm="6" md="6">
+                        <v-text-field :disabled="loading" v-model="editedItem.totalPrice" label="Tổng tiền nợ"
+                          type="number">
                         </v-text-field>
                       </v-col>
 
@@ -67,21 +65,19 @@
                 <v-container>
                   <v-form v-bind:disabled="loading" lazy-validation ref="blacklistDialogForm">
                     <v-row>
-                      <v-col cols="7" sm="7" md="7">
+                      <v-col cols="12" sm="12" md="12">
                         <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="5" sm="5" md="5">
-                        <v-select :items="genders" disabled :rules="fieldRule" v-model="editedItem.gender"
-                          label="Giới Tính"></v-select>
-                      </v-col>
-                      <v-col cols="7" sm="7" md="7">
-                        <v-text-field disabled v-model="editedItem.totalPrice" label="Tổng tiền nợ" type="number">
-                        </v-text-field>
-                      </v-col>
-                      <v-col cols="5" sm="5" md="5">
+                     
+                      <v-col cols="6" sm="6" md="6">
                         <v-text-field disabled v-model="editedItem.debtInvoiceNumber" label="Tổng số hóa đơn nợ"
                           type="number">
+                        </v-text-field>
+                      </v-col>
+
+                      <v-col cols="6" sm="6" md="6">
+                        <v-text-field disabled v-model="editedItem.totalPrice" label="Tổng tiền nợ" type="number">
                         </v-text-field>
                       </v-col>
 
@@ -177,7 +173,6 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      genders: ['Nam', 'Nữ'],
       allStatus: ['Đang trong Blacklist', 'Đang chờ gỡ Blacklist', 'Đang bị Ban'],
 
       isAdmin: false,
@@ -194,11 +189,6 @@ export default {
           align: "start",
           sortable: true,
           value: "name",
-        },
-        {
-          text: "Giới Tính",
-          sortable: true,
-          value: "gender",
         },
         {
           text: "Tổng số hóa đơn nợ",
@@ -220,14 +210,12 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
-        gender: "",
         debtInvoiceNumber: "",
         status: "",
         totalPrice: ""
       },
       defaultItem: {
         name: "",
-        gender: "",
         debtInvoiceNumber: "",
         status: "",
         totalPrice: ""
@@ -465,7 +453,7 @@ export default {
         this.close()
         this.snack = true;
         this.snackColor = "error";
-        this.snackText = "Bạn không có quyền thêm người mới";
+        this.snackText = "Bạn không có quyền tạo blacklist";
         this.loading = false;
       }
     },
