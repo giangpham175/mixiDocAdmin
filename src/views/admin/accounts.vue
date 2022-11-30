@@ -99,7 +99,7 @@
 
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="addOldData">Add new data</v-btn>
+        <v-btn v-if="isAdmin" color="primary" @click="addOldData">Add data</v-btn>
       </template>
     </v-data-table>
 

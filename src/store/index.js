@@ -10,6 +10,7 @@ import logs from "./modules/logger";
 import accounts from "./modules/accounts";
 import vouchers from "./modules/vouchers";
 import healthInsuranceStorage from "./modules/bao-hiem-y-te";
+import blacklistStorage from "./modules/danh-sach-den";
 
 Vue.use(Vuex);
 
@@ -25,5 +26,6 @@ export default new Vuex.Store({
     accounts,
     vouchers,
     healthInsuranceStorage,
+    blacklistStorage,
   },
 });

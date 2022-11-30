@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="newbies" :search="search" class="elevation-1" :loading="loading"
+    <v-data-table :headers="headers" :items="blacklistStorage" :search="search" class="elevation-1" :loading="loading"
       loading-text="Loading... Please wait">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Cư Dân Mới</v-toolbar-title>
+          <v-toolbar-title>Danh sách đen</v-toolbar-title>
           <v-divider class="mx-4" inset vertical />
           <v-spacer />
 
@@ -21,29 +21,73 @@
                 <v-container>
                   <v-form v-bind:disabled="loading" lazy-validation ref="dialogForm">
                     <v-row>
-                      <v-col cols="12" sm="12" md="12">
+                      <v-col cols="7" sm="7" md="7">
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="6" sm="6" md="6">
-                        <v-text-field :disabled="loading" v-model="editedItem.gender" label="Giới Tính">
+                      <v-col cols="5" sm="5" md="5">
+                        <v-select :items="genders" :disabled="loading" :rules="fieldRule" v-model="editedItem.gender"
+                          label="Giới Tính"></v-select>
+                      </v-col>
+                      <v-col cols="7" sm="7" md="7">
+                        <v-text-field :disabled="loading" v-model="editedItem.totalPrice" label="Tổng tiền nợ"
+                          type="number">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="6" sm="6" md="6">
-                        <v-text-field :disabled="loading" v-model="editedItem.dob" label="Năm Sinh" type="number">
+                      <v-col cols="5" sm="5" md="5">
+                        <v-text-field :disabled="loading" v-model="editedItem.debtInvoiceNumber"
+                          label="Tổng số hóa đơn nợ" type="number">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field :disabled="loading" v-model="editedItem.timeImmigration" label="Ngày nhập cư">
+
+                      <v-col class="d-flex" cols="12" sm="12" md="12">
+                        <v-select :items="allStatus" :disabled="loading" :rules="fieldRule" v-model="editedItem.status"
+                          label="Trạng thái"></v-select>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :disabled="loading" color="red darken-1" text @click="close">Hủy</v-btn>
+                <v-btn :disabled="loading" color="blue darken-1" text @click="save">Lưu</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="blacklistDialog" max-width="500px">
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-form v-bind:disabled="loading" lazy-validation ref="blacklistDialogForm">
+                    <v-row>
+                      <v-col cols="7" sm="7" md="7">
+                        <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field disabled v-model="editedItem.timeSupported" label="Thời gian hỗ trợ">
+                      <v-col cols="5" sm="5" md="5">
+                        <v-select :items="genders" disabled :rules="fieldRule" v-model="editedItem.gender"
+                          label="Giới Tính"></v-select>
+                      </v-col>
+                      <v-col cols="7" sm="7" md="7">
+                        <v-text-field disabled v-model="editedItem.totalPrice" label="Tổng tiền nợ" type="number">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field disabled v-model="editedItem.doctorSupported" label="Bác sĩ hỗ trợ">
+                      <v-col cols="5" sm="5" md="5">
+                        <v-text-field disabled v-model="editedItem.debtInvoiceNumber" label="Tổng số hóa đơn nợ"
+                          type="number">
                         </v-text-field>
+                      </v-col>
+
+                      <v-col class="d-flex" cols="12" sm="12" md="12">
+                        <v-select :items="allStatus" :disabled="loading" :rules="fieldRule" v-model="editedItem.status"
+                          label="Trạng thái"></v-select>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -61,7 +105,7 @@
           <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="deleteAll" color="error">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="exportNewbie" color="#2E7D32">
+          <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="exportBlacklist" color="#2E7D32">
             <v-icon>mdi-microsoft-excel</v-icon>
           </v-btn>
         </v-toolbar>
@@ -84,18 +128,28 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
+
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="tickSupported(item)" color="warning">
-              mdi-sticker-check
+            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="refreshItem(item)" color="primary">
+              mdi-refresh
             </v-icon>
           </template>
-          <span>Xác nhận hỗ trợ</span>
+          <span>Refresh</span>
         </v-tooltip>
 
-        <v-icon medium v-if="isAdmin" @click="editItem(item)" color="primary">
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="validateItem(item)" color="warning">
+              mdi-pencil
+            </v-icon>
+          </template>
+          <span>Xem thông tin</span>
+        </v-tooltip>
+
+        <!-- <v-icon medium v-if="isAdmin" @click="editItem(item)" color="primary">
           mdi-pencil
-        </v-icon>
+        </v-icon> -->
         <v-icon small v-if="isAdmin" @click="deleteItem(item)" color="error">
           mdi-delete
         </v-icon>
@@ -117,12 +171,15 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import exportFromJSON from "export-from-json";
-import * as utils from '../../utils/index';
+// import * as utils from '../../utils/index';
 import * as constants from '../../constants/index';
 
 export default {
   data() {
     return {
+      genders: ['Nam', 'Nữ'],
+      allStatus: ['Đang trong Blacklist', 'Đang chờ gỡ Blacklist', 'Đang bị Ban'],
+
       isAdmin: false,
       snack: false,
       snackColor: "",
@@ -130,6 +187,7 @@ export default {
       search: "",
       loading: true,
       dialog: false,
+      blacklistDialog: false,
       headers: [
         {
           text: "Tên",
@@ -143,24 +201,19 @@ export default {
           value: "gender",
         },
         {
-          text: "Năm Sinh",
+          text: "Tổng số hóa đơn nợ",
           sortable: true,
-          value: "dob",
+          value: "debtInvoiceNumber",
         },
         {
-          text: "Ngày nhập cư",
+          text: "Tổng tiền nợ",
           sortable: true,
-          value: "timeImmigration",
+          value: "totalPrice",
         },
         {
-          text: "Thời gian hỗ trợ",
+          text: "Trạng thái",
           sortable: true,
-          value: "timeSupported",
-        },
-        {
-          text: "Bác sĩ hỗ trợ",
-          sortable: true,
-          value: "doctorSupported",
+          value: "status",
         },
         { text: "Thao tác", value: "actions", sortable: false },
       ],
@@ -168,23 +221,21 @@ export default {
       editedItem: {
         name: "",
         gender: "",
-        dob: "",
-        timeImmigration: "",
-        timeSupported: "",
-        doctorSupported: "",
+        debtInvoiceNumber: "",
+        status: "",
+        totalPrice: ""
       },
       defaultItem: {
         name: "",
         gender: "",
-        dob: "",
-        timeImmigration: "",
-        timeSupported: "",
-        doctorSupported: "",
+        debtInvoiceNumber: "",
+        status: "",
+        totalPrice: ""
       },
       fieldRule: [(v) => !!v || "Dữ liệu bắt buộc"],
       logItem: {
         name: "",
-        category: "cu-dan-moi",
+        category: "blacklist",
         content: "",
         time: "",
       },
@@ -196,10 +247,10 @@ export default {
 
   computed: {
     ...mapActions({
-      loadNewbies: "newbies/loadNewbies",
+      loadBlacklistStorage: "blacklistStorage/loadBlacklistStorage",
     }),
     ...mapGetters({
-      newbies: "newbies/getNewbies",
+      blacklistStorage: "blacklistStorage/getBlacklistStorage",
       user: "auth/user",
     }),
     formTitle() {
@@ -219,11 +270,12 @@ export default {
 
   methods: {
     ...mapActions({
-      addNewbie: "newbies/addNewbie",
-      updateNewbie: "newbies/updateNewbie",
-      removeNewbie: "newbies/removeNewbie",
+      addBlacklist: "blacklistStorage/addBlacklist",
+      updateBlacklist: "blacklistStorage/updateBlacklist",
+      removeBlacklist: "blacklistStorage/removeBlacklist",
       addLog: "logs/addLog",
       getAccount: "accounts/getAccount",
+      getBlacklist: "blacklistStorage/getBlacklist",
     }),
 
     async initialize() {
@@ -239,7 +291,7 @@ export default {
       }
 
       try {
-        await this.loadNewbies;
+        await this.loadBlacklistStorage;
       } catch (e) {
         console.error(e);
       }
@@ -247,9 +299,45 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.newbies.indexOf(item);
+      this.editedIndex = this.blacklistStorage.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
+    },
+
+    async validateItem(item) {
+      const getNewData = await this.getBlacklist(item);
+      const newData = getNewData.data()
+
+      this.editedIndex = this.blacklistStorage.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+
+      if (item.status !== newData.status) {
+        this.editedItem.status = newData.status
+
+        await this.updateBlacklist({
+          index: this.editedIndex,
+          blacklist: this.editedItem,
+        });
+      }
+
+      this.blacklistDialog = true;
+    },
+
+    async refreshItem(item) {
+      const getNewData = await this.getBlacklist(item);
+      const newData = getNewData.data()
+
+      this.editedIndex = this.blacklistStorage.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+
+      if (item.status !== newData.status) {
+        this.editedItem.status = newData.status
+
+        await this.updateBlacklist({
+          index: this.editedIndex,
+          blacklist: this.editedItem,
+        });
+      }
     },
 
     async deleteItem(item) {
@@ -257,7 +345,7 @@ export default {
       if (confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
-          await this.removeNewbie(item);
+          await this.removeBlacklist(item);
           // storage().refFromURL(item.image).delete();
           this.loading = false;
 
@@ -284,9 +372,9 @@ export default {
         if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
           this.loading = true;
           try {
-            const data = this.newbies;
+            const data = this.blacklistStorage;
             await data.forEach(async item => {
-              await this.removeNewbie(item)
+              await this.removeBlacklist(item)
             })
             this.snack = true;
             this.snackColor = "success";
@@ -314,8 +402,10 @@ export default {
 
     close() {
       this.dialog = false;
+      this.blacklistDialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
+        this.validatedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
     },
@@ -324,13 +414,13 @@ export default {
       if (!this.$refs.dialogForm.validate()) return;
 
       if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
-
+        // if (confirm("Chắc chắn về tổng tiền nợ?")) {}
         if (this.editedIndex > -1) {
           this.loading = true;
           try {
-            await this.updateNewbie({
+            await this.updateBlacklist({
               index: this.editedIndex,
-              newbie: this.editedItem,
+              blacklist: this.editedItem,
             });
             this.loading = false;
             this.close();
@@ -352,7 +442,7 @@ export default {
           // this.editedItem.total = 1
           this.loading = true;
           try {
-            await this.addNewbie(this.editedItem);
+            await this.addBlacklist(this.editedItem);
             this.loading = false;
             this.close();
 
@@ -370,6 +460,7 @@ export default {
             console.error(e);
           }
         }
+
       } else {
         this.close()
         this.snack = true;
@@ -379,14 +470,14 @@ export default {
       }
     },
 
-    async exportNewbie() {
+    async exportBlacklist() {
       this.loading = true;
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
         if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
-          const data = this.newbies;
-          const fileName = "cu-dan-moi-" + currentDay + "-" + currentMonth;
+          const data = this.blacklistStorage;
+          const fileName = "danh-sach-den-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
 
           if (data) exportFromJSON({ data, fileName, exportType });
@@ -401,56 +492,12 @@ export default {
       this.loading = false;
     },
 
-    async tickSupported(item) {
-      this.loading = true;
-      this.editedIndex = this.newbies.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-
-      if (!this.editedItem.doctorSupported) {
-        this.editedItem.doctorSupported = this.user.data.displayName
-
-        const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
-        this.editedItem.timeSupported = nowTime.toLocaleString()
-
-        if (confirm(`Đồng ý hỗ trợ cho cư dân: ${this.editedItem.name} ?`)) {
-          try {
-            await this.updateNewbie({
-              index: this.editedIndex,
-              newbie: this.editedItem,
-            });
-
-            this.logItem.time = this.editedItem.timeSupported
-            this.logItem.content = `hỗ trợ cư dân: ${this.editedItem.name}`
-            // await this.addLog(this.logItem);
-
-            this.snack = true;
-            this.snackColor = "success";
-            this.snackText = "Hỗ trợ cư dân mới thành công";
-            this.loading = false;
-          } catch (e) {
-            this.loading = false;
-
-            this.snack = true;
-            this.snackColor = "error";
-            this.snackText = "Hỗ trợ cư dân mới không thành công";
-
-            console.error(e);
-          }
-        }
-      } else {
-        this.snack = true;
-        this.snackColor = "error";
-        this.snackText = "Cư dân đã được hỗ trợ";
-      }
-      this.loading = false;
-    },
-
     async addOldData() {
       const data = null
       if (data) {
         try {
           data.forEach(async e => {
-            await this.addNewbie(e);
+            await this.addBlacklist(e);
           })
         } catch (e) {
           this.loading = false;

@@ -115,6 +115,7 @@ export default {
       { path: '/vouchers', title: 'Voucher', icon: 'mdi-ticket-percent' },
       { path: '/bao-hiem-y-te', title: 'Bảo Hiểm Y Tế', icon: 'mdi-shield-plus' },
       { path: '/cu-dan-moi', title: 'Cư Dân Mới', icon: 'mdi-account-group' },
+      { path: '/danh-sach-den', title: 'Blacklist', icon: 'mdi-coffin' },
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
     ],

@@ -15,6 +15,7 @@ import Logger from "../views/admin/logger";
 import Accounts from "../views/admin/accounts";
 import Vouchers from "../views/admin/vouchers";
 import BaoHiemYTe from "../views/admin/bao-hiem-y-te";
+import BlacklistStorage from "../views/admin/danh-sach-den";
 
 Vue.use(VueRouter);
 
@@ -35,6 +36,7 @@ const routes = [
       { path: "khoan-chi", component: SaoKeKhoanChi },
       { path: "canh-sat", component: SaoKeCanhSat },
       { path: "cu-dan-moi", component: CuDanMoi },
+      { path: "danh-sach-den", component: BlacklistStorage },
       { path: "logger", component: Logger },
       { path: "accounts", component: Accounts },
       { path: "vouchers", component: Vouchers },
