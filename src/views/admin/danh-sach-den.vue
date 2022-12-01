@@ -66,18 +66,18 @@
                   <v-form v-bind:disabled="loading" lazy-validation ref="blacklistDialogForm">
                     <v-row>
                       <v-col cols="12" sm="12" md="12">
-                        <v-text-field disabled :rules="fieldRule" v-model="editedItem.name" label="Tên">
+                        <v-text-field :items="allStatus" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
 
                       <v-col cols="6" sm="6" md="6">
-                        <v-text-field disabled v-model="editedItem.debtInvoiceNumber" label="Tổng số hóa đơn nợ"
+                        <v-text-field :items="allStatus" v-model="editedItem.debtInvoiceNumber" label="Tổng số hóa đơn nợ"
                           type="number">
                         </v-text-field>
                       </v-col>
 
                       <v-col cols="6" sm="6" md="6">
-                        <v-text-field disabled v-model="editedItem.totalPrice" label="Tổng tiền nợ" type="number">
+                        <v-text-field :items="allStatus" v-model="editedItem.totalPrice" label="Tổng tiền nợ" type="number">
                         </v-text-field>
                       </v-col>
 
@@ -136,7 +136,7 @@
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon v-if="isManageBlacklist || isAdmin" dark v-bind="attrs" v-on="on" medium class="mr-2"
+            <v-icon v-if="isManageBlacklist" dark v-bind="attrs" v-on="on" medium class="mr-2"
               @click="validateItem(item)" color="warning">
               mdi-pencil
             </v-icon>
@@ -276,9 +276,12 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)
-        || constants.manageBlacklist.includes(this.user.data.email)) {
+      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
+        this.isManageBlacklist = true
+      }
+
+      if (constants.manageBlacklist.includes(this.user.data.email)) {
         this.isManageBlacklist = true
       }
 
