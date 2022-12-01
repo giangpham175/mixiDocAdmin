@@ -27,14 +27,21 @@
                         </v-text-field>
                       </v-col>
 
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field :disabled="loading" v-model="editedItem.depotGarage" @keyup="depotGarageTyping"
+                          label="Tiền chuộc xe kho phương tiện" type="number">
+                        </v-text-field>
+                      </v-col>
+
                       <v-col cols="6" sm="6" md="6">
-                        <v-text-field autofocus :disabled="loading" v-model="editedItem.food" label="Bánh/Nước"
+                        <v-text-field :disabled="isInGarageDepot" v-model="editedItem.food" label="Bánh/Nước"
                           type="number">
                         </v-text-field>
                       </v-col>
 
                       <v-col cols="6" sm="6" md="6">
-                        <v-text-field :disabled="loading" v-model="editedItem.socola" label="Socola" type="number">
+                        <v-text-field :disabled="isInGarageDepot" v-model="editedItem.socola" label="Socola"
+                          type="number">
                         </v-text-field>
                       </v-col>
                     </v-row>
@@ -109,6 +116,8 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
+      isInGarageDepot: false,
+
       isAdmin: false,
       actived: false,
       snack: false,
@@ -146,6 +155,7 @@ export default {
         name: "",
         food: "0",
         socola: "0",
+        depotGarage: "",
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
@@ -154,6 +164,7 @@ export default {
         name: "",
         food: "0",
         socola: "0",
+        depotGarage: "",
         reason: "",
         amount: "",
         time: (new Date()).toLocaleString()
@@ -233,6 +244,18 @@ export default {
       this.loading = false;
     },
 
+    depotGarageTyping() {
+      if (Number(this.editedItem.depotGarage) !== 0) {
+        if (this.editedItem.depotGarage === "") {
+          this.isInGarageDepot = false
+        } else {
+          this.isInGarageDepot = true
+        }
+      } else {
+        this.isInGarageDepot = false
+      }
+    },
+
     async deleteItem(item) {
       this.loading = true;
       if (this.user.data.displayName === item.name) {
@@ -287,19 +310,29 @@ export default {
         this.loading = true;
         const nowTime = utils.changeTimeZone(new Date(), 'Asia/Ho_Chi_Minh');
 
-        const foodCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.food)
-        let foodAmount = `${this.editedItem.food.replace(/\s+/g, '').slice(foodCountRemoveFirstZero, this.editedItem.food.length)}`
+        if (this.isInGarageDepot) {
+          this.editedItem.time = nowTime.toLocaleString()
+          this.defaultItem.time = nowTime.toLocaleString()
+          this.editedItem.reason = 'Chuộc xe kho phương tiện'
+          this.editedItem.amount = Number(this.editedItem.depotGarage)
 
-        const socolaCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.socola)
-        let socolaAmount = `${this.editedItem.socola.replace(/\s+/g, '').slice(socolaCountRemoveFirstZero, this.editedItem.socola.length)}`
+          this.isInGarageDepot = false
+        } else {
+          const foodCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.food)
+          let foodAmount = `${this.editedItem.food.replace(/\s+/g, '').slice(foodCountRemoveFirstZero, this.editedItem.food.length)}`
 
-        foodAmount = Number(foodAmount)
-        socolaAmount = Number(socolaAmount)
+          const socolaCountRemoveFirstZero = utils.countRemoveFirstZeros(this.editedItem.socola)
+          let socolaAmount = `${this.editedItem.socola.replace(/\s+/g, '').slice(socolaCountRemoveFirstZero, this.editedItem.socola.length)}`
 
-        this.editedItem.time = nowTime.toLocaleString()
-        this.defaultItem.time = nowTime.toLocaleString()
-        this.editedItem.reason = `${foodAmount} Bánh/Nước + ${socolaAmount} Socola`
-        this.editedItem.amount = foodAmount * 50 + socolaAmount * 200
+          foodAmount = Number(foodAmount)
+          socolaAmount = Number(socolaAmount)
+
+          this.editedItem.time = nowTime.toLocaleString()
+          this.defaultItem.time = nowTime.toLocaleString()
+          this.editedItem.reason = `${foodAmount} Bánh/Nước + ${socolaAmount} Socola`
+          this.editedItem.amount = foodAmount * 50 + socolaAmount * 200
+        }
+
         this.loading = true;
         try {
           await this.addExpense(this.editedItem);
