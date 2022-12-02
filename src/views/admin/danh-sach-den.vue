@@ -71,13 +71,14 @@
                       </v-col>
 
                       <v-col cols="6" sm="6" md="6">
-                        <v-text-field :items="allStatus" v-model="editedItem.debtInvoiceNumber" label="Tổng số hóa đơn nợ"
-                          type="number">
+                        <v-text-field :items="allStatus" v-model="editedItem.debtInvoiceNumber"
+                          label="Tổng số hóa đơn nợ" type="number">
                         </v-text-field>
                       </v-col>
 
                       <v-col cols="6" sm="6" md="6">
-                        <v-text-field :items="allStatus" v-model="editedItem.totalPrice" label="Tổng tiền nợ" type="number">
+                        <v-text-field :items="allStatus" v-model="editedItem.totalPrice" label="Tổng tiền nợ"
+                          type="number">
                         </v-text-field>
                       </v-col>
 
@@ -408,7 +409,8 @@ export default {
     async save() {
       // if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)
+        || constants.manageBlacklist.includes(this.user.data.email)) {
         // if (confirm("Chắc chắn về tổng tiền nợ?")) {}
         if (this.editedIndex > -1) {
           this.loading = true;
