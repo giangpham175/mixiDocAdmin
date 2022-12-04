@@ -250,6 +250,8 @@ export default {
           this.isInGarageDepot = false
         } else {
           this.isInGarageDepot = true
+          this.editedItem.food = 0
+          this.editedItem.socola = 0
         }
       } else {
         this.isInGarageDepot = false
