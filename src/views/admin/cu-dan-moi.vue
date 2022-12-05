@@ -234,7 +234,7 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
       }
 
@@ -258,7 +258,6 @@ export default {
         this.loading = true;
         try {
           await this.removeNewbie(item);
-          // storage().refFromURL(item.image).delete();
           this.loading = false;
 
           this.snack = true;
@@ -280,7 +279,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin) {
         if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
           this.loading = true;
           try {
@@ -323,8 +322,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
-
+      if (this.isAdmin) {
         if (this.editedIndex > -1) {
           this.loading = true;
           try {
@@ -349,7 +347,6 @@ export default {
             console.error(e);
           }
         } else {
-          // this.editedItem.total = 1
           this.loading = true;
           try {
             await this.addNewbie(this.editedItem);
@@ -384,7 +381,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin) {
           const data = this.newbies;
           const fileName = "cu-dan-moi-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;

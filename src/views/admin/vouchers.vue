@@ -141,7 +141,7 @@
           <span>Xác nhận dùng voucher</span>
         </v-tooltip>
 
-        <v-icon medium v-if="isAdmin" @click="editItem(item)" color="primary">
+        <v-icon medium v-if="isVoucherManager" @click="editItem(item)" color="primary">
           mdi-pencil
         </v-icon>
         <v-icon small v-if="isAdmin" @click="deleteItem(item)" color="error">
@@ -174,6 +174,7 @@ export default {
       doctorIds: ['VUU64294', 'PHA09570'],
       contentPromotions: ['Miễn viện phí', 'Miễn phí chữa trị truyền máu thẳng (không cần quét MRI)'],
       isAdmin: false,
+      isVoucherManager: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -285,8 +286,13 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
+        this.isVoucherManager = true
+      }
+
+      if (account?.role?.includes("VoucherManager")) {
+        this.isVoucherManager = true
       }
 
       try {
@@ -391,7 +397,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin) {
         if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
           this.loading = true;
           try {
@@ -486,7 +492,7 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin || this.isVoucherManager) {
 
         if (this.editedIndex > -1) {
           this.loading = true;
@@ -546,7 +552,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin) {
           const data = this.vouchers;
           const fileName = "voucher-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;

@@ -114,10 +114,7 @@
           </template>
           <span>Cập nhật / Tích - Đổi điểm</span>
         </v-tooltip>
-
-        <!-- <v-icon medium class="mr-2" @click="editItem(item)" color="warning">
-          mdi-plus-minus-variant
-        </v-icon> -->
+        
         <v-icon small v-if="isAdmin" @click="deleteItem(item)" color="error">
           mdi-delete
         </v-icon>
@@ -257,7 +254,7 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
       }
 
@@ -338,7 +335,7 @@ export default {
 
           this.logItem.time = nowTime.toLocaleString()
           this.logItem.content = `cập nhật cư dân: ${this.editedItem.name}`
-          // await this.addLog(this.logItem);
+          await this.addLog(this.logItem);
 
           this.snack = true;
           this.snackColor = "success";
@@ -354,7 +351,6 @@ export default {
           console.error(e);
         }
       } else {
-        // this.editedItem.total = 1
         this.loading = true;
         try {
           await this.addBlood(this.editedItem);
@@ -363,7 +359,7 @@ export default {
 
           this.logItem.time = nowTime.toLocaleString()
           this.logItem.content = `đăng kí cư dân: ${this.editedItem.name}`
-          // await this.addLog(this.logItem);
+          await this.addLog(this.logItem);
 
           this.snack = true;
           this.snackColor = "success";
@@ -517,7 +513,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin) {
           const data = this.bloodstorage;
           const fileName = "hien-mau-" + currentDay + "-" + currentMonth;
           const exportType = exportFromJSON.types.xls;
@@ -538,7 +534,7 @@ export default {
     // TODO: need to fix Uncaught (in promise) TypeError: Cannot convert undefined or null to object
     async resetPoint() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin) {
         this.loading = true;
         if (confirm("Chắc chắn là RESET HẾT đó nha?")) {
           try {
@@ -556,7 +552,6 @@ export default {
             this.snackColor = "success";
             this.snackText = "Reset điểm tích lũy thành công";
             this.loading = false;
-            // }
           } catch (e) {
             this.loading = false;
 

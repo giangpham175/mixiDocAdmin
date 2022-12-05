@@ -29,13 +29,48 @@
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.email" label="Email">
                         </v-text-field>
                       </v-col>
-                      <v-col class="d-flex" cols="6" sm="6" md="6">
+                      <v-col class="d-flex" cols="12" sm="12" md="12">
                         <v-select :items="roles" :disabled="loading" :rules="fieldRule" v-model="editedItem.role"
-                          label="Vai trò trên hệ thống"></v-select>
+                          label="Vai trò trên hệ thống" attach chips multiple></v-select>
                       </v-col>
-                      <v-col class="d-flex" cols="6" sm="6" md="6">
+                      <!-- <v-col class="d-flex" cols="12" sm="12" md="12">
                         <v-select :items="status" disabled :rules="fieldRule" v-model="editedItem.status"
                           label="Trạng thái hoạt động"></v-select>
+                      </v-col> -->
+                    </v-row>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :disabled="loading" color="red darken-1" text @click="close">Hủy</v-btn>
+                <v-btn :disabled="loading" color="blue darken-1" text @click="save">Lưu</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="editDialog" max-width="500px">
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-form v-bind:disabled="loading" lazy-validation ref="dialogForm">
+                    <v-row>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field disabled v-model="editedItem.fullName" label="Tên">
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field disabled v-model="editedItem.email" label="Email">
+                        </v-text-field>
+                      </v-col>
+                      <v-col class="d-flex" cols="12" sm="12" md="12">
+                        <v-select :items="roles" :disabled="loading" :rules="fieldRule" v-model="editedItem.role"
+                          label="Vai trò trên hệ thống" attach chips multiple></v-select>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -70,16 +105,20 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
+        <v-icon medium v-if="isAdmin" @click="editItem(item)" color="primary">
+          mdi-pencil
+        </v-icon>
 
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" class="mr-2" @click="resetPassword(item)"
+            <v-icon dark v-bind="attrs" v-on="on" small v-if="isAdmin" class="mr-2" @click="resetPassword(item)"
               color="warning">
               mdi-form-textbox-password
             </v-icon>
           </template>
           <span>Reset Password</span>
         </v-tooltip>
+
         <!-- <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" @click="changeStatus(item)" color="primary">
@@ -88,14 +127,15 @@
           </template>
           <span>Active / Deactive</span>
         </v-tooltip> -->
-        <v-tooltip top>
+
+        <!-- <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <v-icon dark v-bind="attrs" v-on="on" medium v-if="isAdmin" @click="upgradeDoctor(item)" color="#69F0AE">
               mdi-account-arrow-up
             </v-icon>
           </template>
           <span>Upgrade Doctor</span>
-        </v-tooltip>
+        </v-tooltip> -->
 
       </template>
       <template v-slot:no-data>
@@ -119,7 +159,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      roles: ['Intern', 'Doctor', 'Admin'],
+      roles: ['Intern', 'Doctor', 'ChiefDoctor', 'BlacklistManager', 'VoucherManager', 'Admin', 'PauseWork'],
       status: ['Active', 'Deactive'],
       isAdmin: false,
       snack: false,
@@ -128,6 +168,7 @@ export default {
       search: "",
       loading: true,
       dialog: false,
+      editDialog: false,
       headers: [
         {
           text: "Tên",
@@ -156,14 +197,14 @@ export default {
       editedItem: {
         fullName: "",
         email: "",
-        role: "Doctor",
+        role: ["Intern"],
         status: "Active",
         authUid: "",
       },
       defaultItem: {
         fullName: "",
         email: "",
-        role: "Doctor",
+        role: ["Intern"],
         status: "Active",
         authUid: "",
       },
@@ -191,7 +232,7 @@ export default {
       user: "auth/user",
     }),
     formTitle() {
-      return this.editedIndex === -1 ? "Thông Tin" : "Tích Lũy / Đổi Điểm";
+      return this.editedIndex === -1 ? "Thông Tin" : "Thông Tin";
     },
   },
 
@@ -221,10 +262,9 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
       }
-
 
       try {
         await this.loadAccounts;
@@ -234,13 +274,18 @@ export default {
       this.loading = false;
     },
 
+    editItem(item) {
+      this.editedIndex = this.accounts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.editDialog = true;
+    },
+
     async deleteItem(item) {
       this.loading = true;
       if (confirm("Chắc chắn là XÓA nha?")) {
         this.loading = true;
         try {
           await this.removeAccount(item);
-          // storage().refFromURL(item.image).delete();
           this.loading = false;
 
           this.snack = true;
@@ -262,6 +307,7 @@ export default {
 
     close() {
       this.dialog = false;
+      this.editDialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -271,33 +317,59 @@ export default {
     async save() {
       if (!this.$refs.dialogForm.validate()) return;
 
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
-        this.loading = true;
-        try {
-          this.editedItem.email = this.editedItem.email.toLowerCase()
-          this.dataSignup.email = this.editedItem.email.toLowerCase()
-          this.dataSignup.fullName = this.editedItem.fullName
+      if (this.isAdmin) {
+        if (this.editedIndex > -1) {
+          this.loading = true;
+          try {
+            await this.updateAccount({
+              index: this.editedIndex,
+              account: this.editedItem,
+            });
+            this.loading = false;
+            this.close();
 
-          const signupResult = await this.signUp(this.dataSignup)
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Lưu thông tin thành công";
+          } catch (e) {
+            this.loading = false;
+            this.close();
 
-          this.editedItem.authUid = signupResult.user.uid
-          await this.addAccount(this.editedItem);
-          this.loading = false;
-          this.close();
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Lưu thông tin không thành công";
 
-          this.snack = true;
-          this.snackColor = "success";
-          this.snackText = "Thêm thông tin thành công";
-        } catch (e) {
-          this.loading = false;
-          this.close();
+            console.error(e);
+          }
+        } else {
+          this.loading = true;
+          try {
+            this.editedItem.email = this.editedItem.email.toLowerCase()
+            this.dataSignup.email = this.editedItem.email.toLowerCase()
+            this.dataSignup.fullName = this.editedItem.fullName
 
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = "Thêm thông tin không thành công";
+            const signupResult = await this.signUp(this.dataSignup)
 
-          console.error(e);
+            this.editedItem.authUid = signupResult.user.uid
+            await this.addAccount(this.editedItem);
+            this.loading = false;
+            this.close();
+
+            this.snack = true;
+            this.snackColor = "success";
+            this.snackText = "Thêm thông tin thành công";
+          } catch (e) {
+            this.loading = false;
+            this.close();
+
+            this.snack = true;
+            this.snackColor = "error";
+            this.snackText = "Thêm thông tin không thành công";
+
+            console.error(e);
+          }
         }
+
       } else {
         this.close()
         this.snack = true;
@@ -413,15 +485,15 @@ export default {
     async resetPassword(item) {
       this.loading = true;
 
-      if (item.status === "Deactive") {
-        this.loading = false;
+      // if (item.status === "Deactive") {
+      //   this.loading = false;
 
-        this.snack = true;
-        this.snackColor = "error";
-        this.snackText = "Tài khoản đang trong trạng thái Deactive";
+      //   this.snack = true;
+      //   this.snackColor = "error";
+      //   this.snackText = "Tài khoản đang trong trạng thái Deactive";
 
-        return
-      }
+      //   return
+      // }
 
       if (confirm(`Reset password của: ${item.fullName} ?`)) {
         try {

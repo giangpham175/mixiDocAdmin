@@ -127,7 +127,7 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
       }
       this.loading = false;
@@ -138,7 +138,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin) {
 
           const data = this.logs;
           const fileName = "logs-" + currentDay + "-" + currentMonth;
@@ -159,7 +159,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin) {
         if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
           this.loading = true;
           try {

@@ -237,7 +237,7 @@ export default {
       await this.getAccount(this.userData)
       const account = await this.getAccount(this.userData)
 
-      if (account?.role === "Admin" || constants.adminUser.includes(this.user.data.email)) {
+      if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
       }
 
@@ -373,7 +373,7 @@ export default {
       const currentDay = new Date().getDate();
       const currentMonth = new Date().getMonth() + 1;
       try {
-        if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+        if (this.isAdmin) {
           const allStatus = await this.allstatus;
           await allStatus.forEach(async e => {
             if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === true) {
@@ -405,7 +405,7 @@ export default {
 
     async unlock() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin) {
         const data = await this.allstatus;
         await data.forEach(async e => {
           if (e.id === "lR2PH2qeKEBwRXtAjA8L" && e.actived === false) {
@@ -428,7 +428,7 @@ export default {
 
     async deleteAll() {
       this.loading = true;
-      if (this.isAdmin || constants.adminUser.includes(this.user.data.email)) {
+      if (this.isAdmin) {
         if (confirm("Chắc chắn là XÓA HẾT đó nha?")) {
           this.loading = true;
           try {
