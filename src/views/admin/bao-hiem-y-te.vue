@@ -324,7 +324,7 @@ export default {
         this.isChiefDoctor = true
       }
 
-      if (account?.role?.includes("BlacklistManager")) {
+      if (account?.role?.includes("ChiefDoctor")) {
         this.isChiefDoctor = true
       }
 

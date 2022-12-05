@@ -37,6 +37,15 @@
                         <v-select :items="status" disabled :rules="fieldRule" v-model="editedItem.status"
                           label="Trạng thái hoạt động"></v-select>
                       </v-col> -->
+                      <v-col cols="12" sm="12" md="12">
+                        <span>Intern: Thực tập </span><br>
+                        <span>Doctor: Bác sĩ </span><br>
+                        <span>ChiefDoctor: Bác sĩ trưởng </span><br>
+                        <span>BlacklistManager: Bác sĩ quản lý Blacklist </span><br>
+                        <span>VoucherManager: Bác sĩ quản lý Voucher </span><br>
+                        <span>Admin: Admin </span><br>
+                        <span>PauseWork: Tài khoản ngừng hoạt động </span><br>
+                      </v-col>
                     </v-row>
                   </v-form>
                 </v-container>
@@ -71,6 +80,16 @@
                       <v-col class="d-flex" cols="12" sm="12" md="12">
                         <v-select :items="roles" :disabled="loading" :rules="fieldRule" v-model="editedItem.role"
                           label="Vai trò trên hệ thống" attach chips multiple></v-select>
+                      </v-col>
+
+                      <v-col cols="12" sm="12" md="12">
+                        <span>Intern: Thực tập </span><br>
+                        <span>Doctor: Bác sĩ </span><br>
+                        <span>ChiefDoctor: Bác sĩ trưởng </span><br>
+                        <span>BlacklistManager: Bác sĩ quản lý Blacklist </span><br>
+                        <span>VoucherManager: Bác sĩ quản lý Voucher </span><br>
+                        <span>Admin: Admin </span><br>
+                        <span>PauseWork: Tài khoản ngừng hoạt động </span><br>
                       </v-col>
                     </v-row>
                   </v-form>
