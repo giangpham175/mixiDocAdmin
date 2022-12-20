@@ -171,7 +171,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      doctorIds: ['VUU64294', 'PHA09570'],
+      doctorIds: ['VUU64298', 'PHA09570'],
       contentPromotions: ['Miễn viện phí', 'Miễn phí chữa trị truyền máu thẳng (không cần quét MRI)'],
       isAdmin: false,
       isVoucherManager: false,
