@@ -10,7 +10,7 @@
 
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-if="actived" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Tạo</v-btn>
+              <v-btn v-if="actived && !isIntern" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Tạo</v-btn>
               <v-btn v-else disabled class="mb-2" elevation="2">Tạo</v-btn>
             </template>
             <v-card>
@@ -57,10 +57,10 @@
             </v-card>
           </v-dialog>
 
-          <v-btn v-if="actived" text icon class="mb-2 ml-2" @click="unlock" color="#1DE9B6">
+          <v-btn v-if="actived && isAdmin" text icon class="mb-2 ml-2" @click="unlock" color="#1DE9B6">
             <v-icon>mdi-lock-open-variant</v-icon>
           </v-btn>
-          <v-btn v-else text icon class="mb-2 ml-2" @click="unlock" color="error">
+          <v-btn v-else-if="!actived && isAdmin" text icon class="mb-2 ml-2" @click="unlock" color="error">
             <v-icon>mdi-lock</v-icon>
           </v-btn>
           <v-btn v-if="isAdmin" text icon class="mb-2 ml-2" @click="deleteAll" color="error">
@@ -119,6 +119,7 @@ export default {
       isInGarageDepot: false,
 
       isAdmin: false,
+      isIntern: false,
       actived: false,
       snack: false,
       snackColor: "",
@@ -239,6 +240,10 @@ export default {
 
       if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
+      }
+
+      if (account?.role?.includes("Intern")) {
+        this.isIntern = true
       }
 
       this.loading = false;

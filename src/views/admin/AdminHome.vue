@@ -194,17 +194,17 @@ export default {
         });
     },
     goto(newPath) {
-      if (this.isIntern) {
-        if (this.internAccess.includes(newPath)) {
-          this.$router.push({ path: this.path + newPath }).catch(() => { });
-        } else {
-          this.snack = true;
-          this.snackColor = "error";
-          this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu và danh mục Voucher.`;
+      // if (this.isIntern) {
+      //   if (this.internAccess.includes(newPath)) {
+      //     this.$router.push({ path: this.path + newPath }).catch(() => { });
+      //   } else {
+      //     this.snack = true;
+      //     this.snackColor = "error";
+      //     this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu và danh mục Voucher.`;
 
-          return
-        }
-      }
+      //     return
+      //   }
+      // }
 
       if (this.isSupport) {
         if (newPath !== '/khoan-chi') {

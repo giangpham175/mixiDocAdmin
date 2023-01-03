@@ -86,7 +86,8 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon dark v-bind="attrs" v-on="on" medium class="mr-2" @click="tickSupported(item)" color="warning">
+            <v-icon v-if="!isIntern" dark v-bind="attrs" v-on="on" medium class="mr-2" @click="tickSupported(item)"
+              color="warning">
               mdi-charity
             </v-icon>
           </template>
@@ -123,6 +124,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
+      isIntern: false,
       isAdmin: false,
       snack: false,
       snackColor: "",
@@ -236,6 +238,10 @@ export default {
 
       if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
+      }
+
+      if (account?.role?.includes("Intern")) {
+        this.isIntern = true
       }
 
       try {
