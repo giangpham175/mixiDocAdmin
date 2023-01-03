@@ -60,12 +60,16 @@
           Lịch Sử Thao Tác ?
         </v-card-title>
 
-        <v-card-text>
+        <!-- <v-card-text>
           Xem mục này sẽ tiêu tốn tài nguyên của bạn và hệ thống, chỉ nên tra cứu mục này khi cần thiết
           <br><br>
           <b>Đồng ý</b> - để tiếp tục truy cập
           <br>
           <b>Dừng</b> - để dừng truy cập
+        </v-card-text> -->
+
+        <v-card-text>
+          Xem mục này sẽ tiêu tốn tài nguyên của bạn và hệ thống, chỉ nên tra cứu mục này khi cần thiết
         </v-card-text>
 
         <v-card-actions>
@@ -119,7 +123,8 @@ export default {
       { path: '/logger', title: 'Lịch Sử Thao Tác', icon: 'mdi-clipboard-text-clock' },
       { path: '/accounts', title: 'Quản Lý Tài Khoản', icon: 'mdi-account-box' },
     ],
-    internAccess: ['/hien-mau', '/vouchers'],
+    internNotAccess: ['/logger', '/khoan-chi', '/accounts'],
+    supportNotAccess: ['/khoan-chi', '/accounts'],
     loggerDialog: false,
     deactiveDialog: false,
     snack: false,
@@ -194,27 +199,32 @@ export default {
         });
     },
     goto(newPath) {
-      // if (this.isIntern) {
-      //   if (this.internAccess.includes(newPath)) {
-      //     this.$router.push({ path: this.path + newPath }).catch(() => { });
-      //   } else {
-      //     this.snack = true;
-      //     this.snackColor = "error";
-      //     this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu và danh mục Voucher.`;
 
-      //     return
-      //   }
-      // }
-
-      if (this.isSupport) {
-        if (newPath !== '/khoan-chi') {
-          this.$router.push({ path: this.path + newPath }).catch(() => { });
-        } else {
+      if (this.isIntern) {
+        if (this.internNotAccess.includes(newPath)) {
           this.snack = true;
           this.snackColor = "error";
           this.snackText = `Bạn không thể truy cập vào danh mục này.`;
 
           return
+        } else if (newPath === '/logger') {
+          this.loggerDialog = true
+        } else {
+          this.$router.push({ path: this.path + newPath }).catch(() => { });
+        }
+      }
+
+      if (this.isSupport) {
+        if (this.supportNotAccess.includes(newPath)) {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = `Bạn không thể truy cập vào danh mục này.`;
+
+          return
+        } else if (newPath === '/logger') {
+          this.loggerDialog = true
+        } else {
+          this.$router.push({ path: this.path + newPath }).catch(() => { });
         }
       }
 
