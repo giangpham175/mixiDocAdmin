@@ -130,6 +130,7 @@ export default {
     },
     isAdmin: false,
     isIntern: false,
+    isSupport: false,
     isActive: false
   }),
   created() {
@@ -156,6 +157,10 @@ export default {
 
       if (account?.role?.includes("Admin") || constants.adminUser.includes(this.user.data.email)) {
         this.isAdmin = true
+      }
+
+      if (account?.role?.includes("Support")) {
+        this.isSupport = true
       }
 
       if (account?.role?.includes("Intern")) {
@@ -196,6 +201,18 @@ export default {
           this.snack = true;
           this.snackColor = "error";
           this.snackText = `Bạn chỉ có thể truy cập vào danh mục Hiến Máu và danh mục Voucher.`;
+
+          return
+        }
+      }
+
+      if (this.isSupport) {
+        if (newPath !== '/khoan-chi') {
+          this.$router.push({ path: this.path + newPath }).catch(() => { });
+        } else {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = `Bạn không thể truy cập vào danh mục này.`;
 
           return
         }

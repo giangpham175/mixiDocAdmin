@@ -45,6 +45,7 @@
                         <span>VoucherManager: Bác sĩ quản lý Voucher </span><br>
                         <span>Admin: Admin </span><br>
                         <span>PauseWork: Tài khoản ngừng hoạt động </span><br>
+                        <span>Support: Hỗ trợ </span><br>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -84,6 +85,7 @@
 
                       <v-col cols="12" sm="12" md="12">
                         <span>Intern: Thực tập </span><br>
+                        <span>Support: Hỗ trợ </span><br>
                         <span>Doctor: Bác sĩ </span><br>
                         <span>ChiefDoctor: Bác sĩ trưởng </span><br>
                         <span>BlacklistManager: Bác sĩ quản lý Blacklist </span><br>
@@ -178,7 +180,7 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
-      roles: ['Intern', 'Doctor', 'ChiefDoctor', 'BlacklistManager', 'VoucherManager', 'Admin', 'PauseWork'],
+      roles: ['Intern', 'Support', 'Doctor', 'ChiefDoctor', 'BlacklistManager', 'VoucherManager', 'Admin', 'PauseWork'],
       status: ['Active', 'Deactive'],
       isAdmin: false,
       snack: false,
