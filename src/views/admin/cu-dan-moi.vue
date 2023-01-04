@@ -25,10 +25,16 @@
                         <v-text-field :disabled="loading" :rules="fieldRule" v-model="editedItem.name" label="Tên">
                         </v-text-field>
                       </v-col>
-                      <v-col cols="6" sm="6" md="6">
+
+                      <!-- <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.gender" label="Giới Tính">
                         </v-text-field>
+                      </v-col> -->
+                      <v-col class="d-flex" cols="6" sm="6" md="6">
+                        <v-select :items="genders" :disabled="loading" :rules="fieldRule"
+                          v-model="editedItem.gender" label="Giới Tính"></v-select>
                       </v-col>
+
                       <v-col cols="6" sm="6" md="6">
                         <v-text-field :disabled="loading" v-model="editedItem.dob" label="Năm Sinh" type="number">
                         </v-text-field>
@@ -124,6 +130,8 @@ import * as constants from '../../constants/index';
 export default {
   data() {
     return {
+      genders: ['Nam', 'Nữ'],
+
       isIntern: false,
       isAdmin: false,
       snack: false,
